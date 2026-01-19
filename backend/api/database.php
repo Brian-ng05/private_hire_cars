@@ -1,8 +1,8 @@
 <?php
 $db_server = "localhost:4306";
-$db_user = "root";
-$db_pass = "";
-$db_name = "name";
+$db_user = "comp1807";
+$db_pass = "comp1807";
+$db_name = "private_hire_cars";
 $conn = "";
 
 try {
