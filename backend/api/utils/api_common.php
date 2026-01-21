@@ -19,11 +19,15 @@ function sendResponse($code, $summary, $detailed) {
     exit;
 };
 
-$data = json_decode(file_get_contents("php://input"), true);
+$raw = file_get_contents("php://input");
+$data = null;
 
-if (json_last_error() !== JSON_ERROR_NONE) { 
-    sendResponse(400, "Invalid JSON", "Malformed or unreadable JSON body"); 
-    exit();
-};
+if (!empty($raw)) {
+    $data = json_decode($raw, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        sendResponse(400, "Invalid JSON", "Malformed or unreadable JSON body");
+    }
+}
 
 ?>

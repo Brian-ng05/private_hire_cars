@@ -5,6 +5,8 @@ require_once __DIR__ . '/../utils/validator.php';
 require_once __DIR__ . '/../database.php';
 require_once __DIR__ . '/../models/User.php';
 
+global $data;
+
 if (!isset($data['email'], $data['password'])) {
     sendResponse(400, "Missing fields", "Email and password are required");
 }
