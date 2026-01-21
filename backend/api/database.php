@@ -1,9 +1,4 @@
 <?php
-
-var_dump(getenv());
-exit;
-
-
 $host = getenv('MYSQLHOST');
 $port = getenv('MYSQLPORT');
 $db   = getenv('MYSQL_DATABASE');
@@ -21,7 +16,7 @@ if (!$host || !$db || !$user) {
 $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
 
 try {
-    $pdo = new PDO($dsn, $user, $pass, [
+    $conn = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 } catch (PDOException $e) {
