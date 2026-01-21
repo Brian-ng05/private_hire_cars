@@ -9,8 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-include("C:/xampp/htdocs/GreStackProject/backend/database.php");
-
 function sendResponse($code, $summary, $detailed) {
     http_response_code($code);
     echo json_encode([
