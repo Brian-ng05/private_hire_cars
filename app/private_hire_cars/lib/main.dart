@@ -18,25 +18,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    innitThemeMode();
     super.initState();
   }
 
-  void innitThemeMode() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool? repeat = prefs.getBool(KConstants.themeModeKey);
-    isDarkModeNotifier.value = repeat ?? false;
-  }
-
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isDarkModeNotifier,
-      builder: (context, isDarkMode, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: LoginPage(title: 'Private Hire Car'),
-        );
-      },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(title: 'Private Hire Car'),
     );
   }
 }
