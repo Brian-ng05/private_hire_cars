@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
-import 'package:private_hire_cars/services/auth/login.dart';
+import 'package:private_hire_cars/services/auth/auth_services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -100,25 +100,41 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = true);
 
+    //   try {
+    //     final res = await AuthService.login(email, password);
+
+    //     debugPrint("API RESPONSE: $res");
+
+    //     if (res['status'] == 200) {
+    //       Navigator.pushReplacement(
+    //         context,
+    //         MaterialPageRoute(builder: (_) => const WidgetTree()),
+    //       );
+    //     } else {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(content: Text(res['message']?.toString() ?? "Login failed")),
+    //       );
+    //     }
+    //   } catch (e) {
+    //     ScaffoldMessenger.of(
+    //       context,
+    //     ).showSnackBar(SnackBar(content: Text(e.toString())));
+    //   } finally {
+    //     setState(() => isLoading = false);
+    //   }
+    // }
+
     try {
-      final res = await AuthService.login(email, password);
+      await AuthService.login(email, password);
 
-      debugPrint("API RESPONSE: $res");
-
-      if (res['status'] == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const WidgetTree()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(res['message']?.toString() ?? "Login failed")),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
+      Navigator.pushReplacement(
         context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+        MaterialPageRoute(builder: (_) => const WidgetTree()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+      );
     } finally {
       setState(() => isLoading = false);
     }
