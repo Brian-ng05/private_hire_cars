@@ -1,4 +1,9 @@
 <?php
+
+error_log("METHOD = " . $_SERVER['REQUEST_METHOD']);
+error_log("URI = " . $_SERVER['REQUEST_URI']);
+
+
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $fullPath = __DIR__ . $path;
 
