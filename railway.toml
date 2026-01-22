@@ -1,5 +1,5 @@
 [build]
-builder = "php"
+  builder = "nixpacks"
 
-[php]
-extensions = ["pdo_mysql"]
+[setup]
+  nixPkgs = ["php82", "php82Extensions.pdo_mysql"]
