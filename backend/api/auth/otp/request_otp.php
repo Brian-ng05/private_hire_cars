@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../database.php';
 
 require_once __DIR__ . '/../../models/User.php';
 require_once __DIR__ . '/../../models/EmailVerifications.php';
+require_once __DIR__ . '/../../helpers/email_otp_template.php';
 
 error_log("DIR = " . __DIR__);
 
