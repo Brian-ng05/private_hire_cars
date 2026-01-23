@@ -7,8 +7,7 @@ class MailService
     public static function send($to, $subject, $html)
     {
         $data = [
-            "from" => ($_ENV['MAIL_NAME'] ?? 'Private Hire Car') .
-                " <" . ($_ENV['MAIL_FROM'] ?? 'no-reply@resend.dev') . ">",
+            "from" => ($_ENV['MAIL_NAME'] ?? 'Private Hire Car') . " <" . $_ENV['MAIL_FROM'] . ">",
             "to" => [$to],
             "subject" => $subject,
             "html" => $html
