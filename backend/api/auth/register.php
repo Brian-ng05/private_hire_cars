@@ -8,13 +8,18 @@ require_once __DIR__ . '/../models/EmailVerifications.php';
 
 global $data;
 
-if (!isset($data['verification_id'], $data['email'], $data['password'])) {
-    sendResponse(400, "Missing fields", "Verification ID, email, and password are required");
+if (!isset($data['verification_id'], $data['email'], $data['password'], $data['password_confirm'])) {
+    sendResponse(400, "Missing fields", "Verification ID, email, password, and password_confirm are required");
 }
 
 $verification_id = (int)$data['verification_id'];
 $email = trim($data['email']);
 $password = $data['password'];
+$password_confirm = $data['password_confirm'];
+
+if ($password !== $password_confirm) {
+    sendResponse(400, "Password mismatch", "Password and password confirmation do not match");
+}
 
 if (!validateEmail($email)) {
     sendResponse(400, "Invalid email", "Email format is not valid");
@@ -32,7 +37,7 @@ try {
     $userModel = new User($conn);
     $verificationModel = new EmailVerification($conn);
 
-    $verification = $verificationModel->findVerifiedById($verification_id);
+    $verification = $verificationModel->findVerifiedById($verification_id, 'EMAIL_VERIFY');
 
     if (!$verification) {
         sendResponse(403, "Verification required", "Please verify your email first or the code has expired");

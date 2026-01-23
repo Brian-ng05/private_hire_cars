@@ -9,20 +9,25 @@ error_log("DIR = " . __DIR__);
 
 global $data;
 
-if (!isset($data['otp'])) {
-    sendResponse(400, "Missing field", "OTP is required");
+if (!isset($data['otp'], $data['type'])) {
+    sendResponse(400, "Missing fields", "OTP and type are required");
 }
 
 $otp = trim($data['otp']);
+$type = strtoupper($data['type']);
 
 if (!preg_match('/^\d{6}$/', $otp)) {
     sendResponse(400, "Invalid OTP", "OTP must be a 6-digit number");
 }
 
+if (!in_array($type, ['EMAIL_VERIFY', 'PASSWORD_RESET'])) {
+    sendResponse(400, "Invalid type", "Type must be EMAIL_VERIFY or PASSWORD_RESET");
+}
+
 try {
     $verificationModel = new EmailVerification($conn);
 
-    $verification = $verificationModel->findByTokenAndType($otp, 'EMAIL_VERIFY');
+    $verification = $verificationModel->findByTokenAndType($otp, $type);
 
     if (!$verification) {
         sendResponse(404, "Invalid OTP", "The verification code is invalid or already used");

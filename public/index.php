@@ -81,6 +81,19 @@ switch ($path) {
         require __DIR__ . '/../backend/api/auth/otp/verify_otp.php';
         break;
 
+    case '/api/recovery-password':
+        if ($method !== 'POST') {
+            http_response_code(405);
+            echo json_encode([
+                "status"  => 405,
+                "summary" => "Method Not Allowed",
+                "detail"  => "Use POST method"
+            ]);
+            exit;
+        }
+        require __DIR__ . '/../backend/api/auth/recovery_password.php';
+        break;
+
     case '/api/test-mail':
     if ($method !== 'GET') {
         http_response_code(405);
