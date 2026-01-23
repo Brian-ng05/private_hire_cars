@@ -2,38 +2,39 @@
 
 namespace models;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 class MailService
 {
-    public static function send($to, $subject, $body)
+    public static function send($to, $subject, $html)
     {
-        $mail = new PHPMailer(true);
+        $data = [
+            "from" => ($_ENV['MAIL_NAME'] ?? 'Private Hire Car') .
+                      " <" . ($_ENV['MAIL_FROM'] ?? 'no-reply@resend.dev') . ">",
+            "to" => [$to],
+            "subject" => $subject,
+            "html" => $html
+        ];
 
-        try {
-            $mail->isSMTP();
-            $mail->Host       = $_ENV['SMTP_HOST'];
-            $mail->SMTPAuth   = true;
-            $mail->Username   = $_ENV['SMTP_USER'];
-            $mail->Password   = $_ENV['SMTP_PASS'];
-            $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
-            $mail->SMTPSecure =
-                ($_ENV['SMTP_ENCRYPTION'] ?? 'tls') === 'ssl'
-                ? PHPMailer::ENCRYPTION_SMTPS
-                : PHPMailer::ENCRYPTION_STARTTLS;
+        $ch = curl_init("https://api.resend.com/emails");
 
-            $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_NAME'] ?? 'Private Hire Car');
-            $mail->addAddress($to);
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer " . $_ENV['RESEND_API_KEY'],
+                "Content-Type: application/json"
+            ],
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_RETURNTRANSFER => true
+        ]);
 
-            $mail->isHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body    = $body;
+        $response = curl_exec($ch);
 
-            return $mail->send();
-        } catch (Exception $e) {
-            error_log('Mail error: ' . $mail->ErrorInfo);
+        if (curl_errno($ch)) {
+            error_log("Mail API error: " . curl_error($ch));
             return false;
         }
+
+        $result = json_decode($response, true);
+
+        return isset($result['id']);
     }
 }
