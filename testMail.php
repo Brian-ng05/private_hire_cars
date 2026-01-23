@@ -3,7 +3,7 @@
 use models\MailService;
 
 $result = MailService::send(
-    "baonqgcd230175@fpt.edu.vn",
+    "nguyenbao12122005@gmail.com",
     "Test Mail API",
     "<h2>Mail API OK</h2>"
 );
