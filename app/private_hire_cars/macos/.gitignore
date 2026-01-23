@@ -1,6 +1,8 @@
 # Flutter-related
 **/Flutter/ephemeral/
 **/Pods/
+macos/Flutter/
+
 
 # Xcode-related
 **/dgph
