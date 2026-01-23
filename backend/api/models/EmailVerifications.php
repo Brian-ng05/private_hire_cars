@@ -49,7 +49,7 @@ class EmailVerification {
      */
     public function findVerifiedById(int $verification_id, string $type): ?array {
         $stmt = $this->db->prepare(
-            "SELECT verification_id, user_id, verification_token, verified_at
+            "SELECT verification_id, user_id, verification_token, type, verified_at
             FROM email_verifications
             WHERE verification_id = :id
             AND type = :type
