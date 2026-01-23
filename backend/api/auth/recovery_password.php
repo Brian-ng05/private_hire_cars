@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../utils/api_common.php';
 require_once __DIR__ . '/../utils/validator.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../database.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/EmailVerifications.php';
 
