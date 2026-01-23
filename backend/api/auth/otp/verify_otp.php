@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../../../utils/api_common.php';
-require_once __DIR__ . '/../../../utils/validator.php';
-require_once __DIR__ . '/../../../utils/database.php';
-require_once __DIR__ . '/../../../models/EmailVerifications.php';
+require_once __DIR__ . '/../../utils/api_common.php';
+require_once __DIR__ . '/../../utils/validator.php';
+require_once __DIR__ . '/../../database.php';
+require_once __DIR__ . '/../../models/EmailVerifications.php';
 
 error_log("DIR = " . __DIR__);
 
