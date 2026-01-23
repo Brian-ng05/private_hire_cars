@@ -23,7 +23,7 @@ class MailService
                 ? PHPMailer::ENCRYPTION_SMTPS
                 : PHPMailer::ENCRYPTION_STARTTLS;
 
-            $mail->setFrom($_ENV['SMTP_USER'], $_ENV['MAIL_NAME'] ?? 'Private Hire Car');
+            $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_NAME'] ?? 'Private Hire Car');
             $mail->addAddress($to);
 
             $mail->isHTML(true);
