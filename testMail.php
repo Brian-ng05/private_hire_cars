@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use models\MailService;
 
 $to = $_GET['to'] ?? 'baonqgcd230175@fpt.edu.vn';

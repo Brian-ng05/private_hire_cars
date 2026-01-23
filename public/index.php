@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../backend/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 use models\MailService;
 
 error_log("METHOD = " . $_SERVER['REQUEST_METHOD']);
