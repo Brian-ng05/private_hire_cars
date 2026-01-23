@@ -32,7 +32,7 @@ try {
     $userModel = new User($conn);
     $verificationModel = new EmailVerification($conn);
 
-    $verification = $verificationModel->findVerifiedById($verification_id);
+    $verification = $verificationModel->findVerifiedById($verification_id, 'PASSWORD_RESET');
 
     if (!$verification || $verification['type'] !== 'PASSWORD_RESET') {
         sendResponse(403, "Verification required", "Please verify your email first or the code has expired");

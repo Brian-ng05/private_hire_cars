@@ -47,18 +47,25 @@ class EmailVerification {
 
     /** Find record by verification_id
      */
-    public function findVerifiedById(int $verification_id): ?array {
+    public function findVerifiedById(int $verification_id, string $type): ?array {
         $stmt = $this->db->prepare(
             "SELECT verification_id, user_id, verification_token, verified_at
-             FROM email_verifications
-             WHERE verification_id = :id
-               AND type = 'EMAIL_VERIFY'
-               AND verified_at IS NOT NULL
-             LIMIT 1"
+            FROM email_verifications
+            WHERE verification_id = :id
+            AND type = :type
+            AND verified_at IS NOT NULL
+            AND expires_at > NOW()
+            LIMIT 1"
         );
-        $stmt->execute([':id' => $verification_id]);
+
+        $stmt->execute([
+            ':id' => $verification_id,
+            ':type' => $type
+        ]);
+
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
+
 
     /** Update verified_at = NOW()
      */
