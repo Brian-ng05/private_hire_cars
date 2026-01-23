@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../backend/vendor/autoload.php';
+use models\MailService;
 
 error_log("METHOD = " . $_SERVER['REQUEST_METHOD']);
 error_log("URI = " . $_SERVER['REQUEST_URI']);
@@ -53,6 +54,20 @@ switch ($path) {
         }
         require __DIR__ . '/../backend/api/auth/register.php';
         break;
+
+    case '/api/test-mail':
+    if ($method !== 'GET') {
+        http_response_code(405);
+        echo json_encode([
+            "status"  => 405,
+            "summary" => "Method Not Allowed",
+            "detail"  => "Use GET method"
+        ]);
+        exit;
+    }
+
+    require __DIR__ . '/../testMail.php';
+    break;
 
     default:
         http_response_code(404);
