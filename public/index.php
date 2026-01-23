@@ -1,4 +1,5 @@
 <?php
+require __DIR__ . '/../backend/vendor/autoload.php';
 
 error_log("METHOD = " . $_SERVER['REQUEST_METHOD']);
 error_log("URI = " . $_SERVER['REQUEST_URI']);
