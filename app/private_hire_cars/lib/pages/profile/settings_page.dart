@@ -1,6 +1,7 @@
-// import 'package:demo/views/pages/expanded_flexible_test.dart';
 import 'package:flutter/material.dart';
+import 'package:private_hire_cars/data/notifiers.dart';
 import 'package:private_hire_cars/pages/login_page.dart';
+import 'package:private_hire_cars/services/storage_service.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key, required this.title});
@@ -43,7 +44,9 @@ class _SettingPageState extends State<SettingPage> {
                     foregroundColor: Colors.white,
                     minimumSize: const Size(double.infinity, 48),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    await StorageService.clearUser();
+                    selectedPageNotifier.value = 0;
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

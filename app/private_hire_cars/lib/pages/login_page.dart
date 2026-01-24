@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:private_hire_cars/pages/register/request_otp.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
+import 'package:private_hire_cars/services/storage_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -80,6 +82,29 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(height: 200),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Don't have an account? "),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterEmailPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -91,6 +116,11 @@ class _LoginPageState extends State<LoginPage> {
     final email = controllerEmail.text.trim();
     final password = controllerPw.text;
 
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final passwordRegex = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$',
+    );
+
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Email and password are required")),
@@ -98,34 +128,30 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    if (!emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Invalid email format")));
+      return;
+    }
+
+    if (!passwordRegex.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Password must be 8+ chars, include upper, lower, number & special char",
+          ),
+        ),
+      );
+      return;
+    }
+
     setState(() => isLoading = true);
 
-    //   try {
-    //     final res = await AuthService.login(email, password);
-
-    //     debugPrint("API RESPONSE: $res");
-
-    //     if (res['status'] == 200) {
-    //       Navigator.pushReplacement(
-    //         context,
-    //         MaterialPageRoute(builder: (_) => const WidgetTree()),
-    //       );
-    //     } else {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         SnackBar(content: Text(res['message']?.toString() ?? "Login failed")),
-    //       );
-    //     }
-    //   } catch (e) {
-    //     ScaffoldMessenger.of(
-    //       context,
-    //     ).showSnackBar(SnackBar(content: Text(e.toString())));
-    //   } finally {
-    //     setState(() => isLoading = false);
-    //   }
-    // }
-
     try {
-      await AuthService.login(email, password);
+      final response = await AuthService.login(email, password);
+
+      await StorageService.saveUser(response);
 
       Navigator.pushReplacement(
         context,
