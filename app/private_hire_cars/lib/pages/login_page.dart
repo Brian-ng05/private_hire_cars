@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:private_hire_cars/pages/register/request_otp.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
@@ -37,7 +38,8 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
+          child: 
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Email:"),
@@ -70,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
               FilledButton(
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(double.infinity, 45),
+                  backgroundColor: Colors.green
                 ),
                 onPressed: isLoading ? null : onLoginPressed,
                 child: isLoading
@@ -82,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(height: 200),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -105,6 +109,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
+              RichText(
+                text: TextSpan(
+                  text: "Password Recovery",
+                  style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                  recognizer: TapGestureRecognizer()
+                  ..onTap = (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterEmailPage(),
+                        ),
+                      );
+                  }
+                ),
+              ), 
             ],
           ),
         ),
