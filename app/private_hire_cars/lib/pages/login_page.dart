@@ -4,6 +4,7 @@ import 'package:private_hire_cars/pages/register/request_otp.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
 import 'package:private_hire_cars/services/storage_service.dart';
+import 'package:private_hire_cars/pages/register/password_recovery_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -119,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const RegisterEmailPage(),
+                          builder: (_) => const PasswordRecoveryState(),
                         ),
                       );
                   }

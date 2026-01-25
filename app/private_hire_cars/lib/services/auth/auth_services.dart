@@ -40,7 +40,7 @@ class AuthService {
 
     final data = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200) { // If the json request of reponse was successful
       return RequestOtpResponse.fromJson(data);
     } else {
       throw Exception(data['summary'] ?? "Request OTP failed");
