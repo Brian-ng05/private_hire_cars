@@ -16,7 +16,16 @@ class User {
             ':password' => $passwordHash
         ]);
 
-        return (int)$this->db->lastInsertId();
+        $userId = (int)$this->db->lastInsertId();
+
+        // Automatically create a customer profile for the new user
+        $profileStmt = $this->db->prepare(
+            "INSERT INTO customer_profiles (user_id)
+             VALUES (:user_id)"
+        );
+        $profileStmt->execute([':user_id' => $userId]);
+
+        return $userId;
     }
 
     public function findByEmail(string $email): ?array {
