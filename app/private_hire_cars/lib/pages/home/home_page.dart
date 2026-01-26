@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/home_data.dart'; // Make sure this path is correct based on your folder structure
+import '../../data/home_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -11,8 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // We removed _selectedIndex because 'WidgetTree' handles navigation now.
-
   // --- MOCK DATA ---
   final List<ServiceItem> services = [
     ServiceItem(id: '1', title: 'Ride now', subtitle: 'Book a trip', icon: Icons.directions_car_filled_outlined, route: '/booking'),
@@ -29,8 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Note: We use Scaffold here to set the white background, 
-    // but we DO NOT add an AppBar or BottomNavigationBar.
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -39,8 +35,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- HEADER SECTION (Replaces the standard AppBar) ---
-              // We use the design's "Hello User" instead of widget.title
+              // --- HEADER SECTION ---
               const Text(
                 "Hello, User!",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -84,7 +79,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 25),
 
-              // --- DYNAMIC SERVICES GRID ---
+              // --- SERVICES GRID (CÓ BORDER ĐEN) ---
               const Text(
                 "Services",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -100,8 +95,6 @@ class _HomePageState extends State<HomePage> {
                     subtitle: service.subtitle,
                     onTap: () {
                       print("User clicked ${service.title}");
-                      // In the future, you might use your team's router here
-                      // Navigator.pushNamed(context, service.route);
                     },
                   );
                 }).toList(),
@@ -109,7 +102,7 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 25),
 
-              // --- DYNAMIC DISCOUNT SECTION ---
+              // --- DISCOUNT SECTION ---
               const Text(
                 "Discount",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -148,7 +141,11 @@ class _HomePageState extends State<HomePage> {
     double cardWidth = (MediaQuery.of(context).size.width - 40 - 15) / 2;
 
     return Material(
-      color: Colors.transparent,
+      color: Colors.white, 
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Colors.black, width: 1.0), // Border đen dày 1.0
+      ),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -157,9 +154,6 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           width: cardWidth,
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
