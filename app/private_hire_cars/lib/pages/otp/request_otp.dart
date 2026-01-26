@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
 import 'verify_otp.dart';
 
-class RegisterEmailPage extends StatefulWidget {
-  const RegisterEmailPage({super.key});
+class RequestOtpPage extends StatefulWidget {
+  final String type;
+  const RequestOtpPage({super.key, required this.type});
 
   @override
-  State<RegisterEmailPage> createState() => _RegisterEmailPageState();
+  State<RequestOtpPage> createState() => _RequestOtpPageState();
 }
 
-class _RegisterEmailPageState extends State<RegisterEmailPage> {
+class _RequestOtpPageState extends State<RequestOtpPage> {
   final controllerEmail = TextEditingController();
   bool loading = false;
 
@@ -26,11 +27,13 @@ class _RegisterEmailPageState extends State<RegisterEmailPage> {
     setState(() => loading = true);
 
     try {
-      await AuthService.requestOtp(email: email, type: "EMAIL_VERIFY");
+      await AuthService.requestOtp(email: email, type: widget.type);
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => RegisterVerifyOtpPage(email: email)),
+        MaterialPageRoute(
+          builder: (_) => VerifyOtpPage(email: email, type: widget.type),
+        ),
       );
     } catch (e) {
       showMsg(e.toString());

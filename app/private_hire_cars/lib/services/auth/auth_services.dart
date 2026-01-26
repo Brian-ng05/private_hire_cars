@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:private_hire_cars/classes/auth/login_class.dart';
+import 'package:private_hire_cars/classes/auth/recovery_password_class.dart';
 import 'package:private_hire_cars/classes/auth/register.dart';
 import 'package:private_hire_cars/classes/auth/request_otp.dart';
 import 'package:private_hire_cars/classes/auth/verify_otp.dart';
@@ -92,6 +93,30 @@ class AuthService {
       return CreateAccountResponse.fromJson(data);
     } else {
       throw Exception(data['summary'] ?? "Create account failed");
+    }
+  }
+
+  static Future<ResetPasswordDetail> resetPassword({
+    required int verificationId,
+    required String password,
+    required String passwordConfirm,
+  }) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/recovery-password"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "verification_id": verificationId,
+        "password": password,
+        "password_confirm": passwordConfirm,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 201) {
+      return ResetPasswordDetail.fromJson(data);
+    } else {
+      throw Exception(data['summary'] ?? "Reset password failed");
     }
   }
 }

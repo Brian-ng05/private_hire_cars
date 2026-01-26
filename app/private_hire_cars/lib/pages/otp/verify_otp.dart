@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:private_hire_cars/pages/recovery_password_page.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
-import 'register.dart';
+import '../register.dart';
 
-class RegisterVerifyOtpPage extends StatefulWidget {
+class VerifyOtpPage extends StatefulWidget {
   final String email;
+  final String type;
 
-  const RegisterVerifyOtpPage({super.key, required this.email});
+  const VerifyOtpPage({super.key, required this.email, required this.type});
 
   @override
-  State<RegisterVerifyOtpPage> createState() => _RegisterVerifyOtpPageState();
+  State<VerifyOtpPage> createState() => _VerifyOtpPageState();
 }
 
-class _RegisterVerifyOtpPageState extends State<RegisterVerifyOtpPage> {
+class _VerifyOtpPageState extends State<VerifyOtpPage> {
   final controllers = List.generate(6, (_) => TextEditingController());
   bool loading = false;
 
@@ -23,17 +25,27 @@ class _RegisterVerifyOtpPageState extends State<RegisterVerifyOtpPage> {
     setState(() => loading = true);
 
     try {
-      final res = await AuthService.verifyOtp(otp: otp, type: "EMAIL_VERIFY");
+      final res = await AuthService.verifyOtp(otp: otp, type: widget.type);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => RegisterPasswordPage(
-            email: widget.email,
-            verificationId: res.detailed.verificationId,
-          ),
-        ),
-      );
+      widget.type == "EMAIL_VERIFY"
+          ? Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => RegisterPasswordPage(
+                  email: widget.email,
+                  verificationId: res.detailed.verificationId,
+                ),
+              ),
+            )
+          : Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PasswordRecoveryPage(
+                  email: widget.email,
+                  verificationId: res.detailed.verificationId,
+                ),
+              ),
+            );
     } catch (e) {
       showMsg(e.toString());
     } finally {

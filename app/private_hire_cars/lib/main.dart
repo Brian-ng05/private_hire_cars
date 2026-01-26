@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:private_hire_cars/pages/login_page.dart';
-import 'package:private_hire_cars/data/constants.dart';
-import 'package:private_hire_cars/data/notifiers.dart';
 
 void main() {
   runApp(const MyApp());

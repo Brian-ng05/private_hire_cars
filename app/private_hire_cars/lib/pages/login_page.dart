@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:private_hire_cars/pages/register/request_otp.dart';
+import 'package:private_hire_cars/pages/otp/request_otp.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
 import 'package:private_hire_cars/services/storage_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -14,14 +13,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController controllerEmail = TextEditingController(
-    text: "test@gmail.com",
-  );
-  final TextEditingController controllerPw = TextEditingController(
-    text: "Test123@",
-  );
+  final controllerEmail = TextEditingController(text: "test@gmail.com");
+  final controllerPw = TextEditingController(text: "Test123@");
 
   bool isLoading = false;
+  bool obscurePw = true;
 
   @override
   void dispose() {
@@ -34,77 +30,106 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Private Hire Cars"), centerTitle: true),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Email:"),
+              const SizedBox(height: 60),
+
+              /// EMAIL
               TextField(
                 controller: controllerEmail,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'Enter Your Email',
+                  labelText: "Email",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(15),
                   ),
+                  prefixIcon: const Icon(Icons.email_outlined),
                 ),
               ),
 
-              const SizedBox(height: 12),
-              Text("Password:"),
+              const SizedBox(height: 16),
+
+              /// PASSWORD
               TextField(
                 controller: controllerPw,
-                obscureText: true,
+                obscureText: obscurePw,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => onLoginPressed(),
                 decoration: InputDecoration(
-                  hintText: 'Enter Your Password',
+                  labelText: "Password",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePw ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () => setState(() => obscurePw = !obscurePw),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
+              /// LOGIN BUTTON
               FilledButton(
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 45),
-                ),
                 onPressed: isLoading ? null : onLoginPressed,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                ),
                 child: isLoading
                     ? const SizedBox(
                         height: 22,
                         width: 22,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text("Login"),
+                    : const Text("Login"),
               ),
 
-              const SizedBox(height: 200),
+              const SizedBox(height: 20),
+
+              /// SIGN UP
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account? "),
-                  GestureDetector(
-                    onTap: () {
+                  TextButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const RegisterEmailPage(),
+                          builder: (_) =>
+                              const RequestOtpPage(type: "EMAIL_VERIFY"),
                         ),
                       );
                     },
-                    child: const Text(
-                      "Sign up",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: const Text("Sign up"),
                   ),
                 ],
               ),
+
+              /// RESET
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const RequestOtpPage(type: "PASSWORD_RESET"),
+                    ),
+                  );
+                },
+                child: const Text("Forgot password?"),
+              ),
+
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -112,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void onLoginPressed() async {
+  // ================= LOGIN =================
+  Future<void> onLoginPressed() async {
     final email = controllerEmail.text.trim();
     final password = controllerPw.text;
 
@@ -122,27 +148,17 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Email and password are required")),
-      );
+      showSnack("Email and password are required");
       return;
     }
 
     if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Invalid email format")));
+      showSnack("Invalid email format");
       return;
     }
 
     if (!passwordRegex.hasMatch(password)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Password must be 8+ chars, include upper, lower, number & special char",
-          ),
-        ),
-      );
+      showSnack("Password must be strong");
       return;
     }
 
@@ -150,19 +166,23 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await AuthService.login(email, password);
-
       await StorageService.saveUser(response);
+
+      if (!mounted) return;
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const WidgetTree()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-      );
+      showSnack(e.toString());
     } finally {
+      if (!mounted) return;
       setState(() => isLoading = false);
     }
+  }
+
+  void showSnack(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
