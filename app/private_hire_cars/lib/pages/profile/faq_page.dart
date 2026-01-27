@@ -16,12 +16,12 @@ class _FaqPageState extends State<FaqPage> {
     {
       'question': 'How to book a ride?',
       'answer':
-          'To book a ride, simply open the app, enter your destination, and select a vehicle.',
+          'To book a ride, simply choose one of the four services, enter your destination, and select a vehicle.',
     },
     {
       'question': 'How do I get loyalty points?',
       'answer':
-          'You can earn loyalty points by completing rides through the app.',
+          'You can earn loyalty points by booking rides through the app.',
     },
     {
       'question': 'How do I get discounts?',

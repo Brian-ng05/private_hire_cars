@@ -113,7 +113,7 @@ class AuthService {
 
     final data = jsonDecode(response.body);
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return ResetPasswordDetail.fromJson(data);
     } else {
       throw Exception(data['summary'] ?? "Reset password failed");
