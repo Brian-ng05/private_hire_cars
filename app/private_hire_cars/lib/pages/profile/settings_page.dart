@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:private_hire_cars/data/notifiers.dart';
 import 'package:private_hire_cars/pages/login_page.dart';
 import 'package:private_hire_cars/services/storage_service.dart';
+import 'package:private_hire_cars/pages/profile/faq_page.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key, required this.title});
@@ -40,6 +41,18 @@ class _SettingPageState extends State<SettingPage> {
                       _buildItem(Icons.notifications, 'Notifications'),
                       _buildItem(Icons.language, 'Language'),
                       _buildItem(Icons.info_outline, 'About us'),
+                      _buildItem(
+                        Icons.help_outline,
+                        'FAQ',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FaqPage(title: "FAQ"),
+                            ),
+                          );
+                        },
+                      ),
                       _buildItem(Icons.chat_bubble_outline, 'Contact us'),
                     ],
                   ),
@@ -82,14 +95,14 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _buildItem(IconData icon, String title) {
+  Widget _buildItem(IconData icon, String title, {VoidCallback? onTap}) {
     return Column(
       children: [
         ListTile(
           leading: Icon(icon, color: Colors.black),
           title: Text(title),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () {},
+          onTap: onTap,
         ),
         const Divider(height: 1),
       ],
