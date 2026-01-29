@@ -108,6 +108,19 @@ switch ($path) {
     require __DIR__ . '/../testMail.php';
     break;
 
+    case '/api/distance':
+        if ($method !== 'POST') {
+            http_response_code(405);
+            echo json_encode([
+                "status"  => 405,
+                "summary" => "Method Not Allowed",
+                "detail"  => "Use POST method"
+            ]);
+            exit;
+        }
+        require __DIR__ . '/../backend/api/utils/distance.php';
+        break;
+
     default:
         http_response_code(404);
         echo json_encode([
