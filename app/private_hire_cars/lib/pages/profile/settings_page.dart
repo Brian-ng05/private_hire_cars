@@ -13,11 +13,15 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
+const backgroundColor = Color(0xfff6f7f9);
+
 class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
+        backgroundColor: backgroundColor,
         title: Text(widget.title),
         centerTitle: true,
         leading: BackButton(
@@ -59,36 +63,34 @@ class _SettingPageState extends State<SettingPage> {
                 ),
 
                 /// Nút Logout
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                      onPressed: () async {
-                        await StorageService.clearUser();
-                        selectedPageNotifier.value = 0;
-
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                const LoginPage(title: "Private Hire Car"),
-                          ),
-                          (route) => false,
-                        );
-                      },
-                      icon: const Icon(Icons.logout),
-                      label: const Text("Log out"),
-                    ),
-                  ),
-                ),
               ],
             ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 50),
+            ),
+            onPressed: () async {
+              await StorageService.clearUser();
+              selectedPageNotifier.value = 0;
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const LoginPage(title: "Private Hire Car"),
+                ),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.logout),
+            label: const Text("Log out"),
           ),
         ),
       ),

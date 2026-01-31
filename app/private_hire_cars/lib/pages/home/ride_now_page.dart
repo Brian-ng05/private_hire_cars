@@ -65,39 +65,63 @@ class _RideNowPageState extends State<RideNowPage> {
                   border: Border.all(color: Colors.black12),
                 ),
                 child: TextField(
-                  controller: dropoffController,
+                  controller: pickupController,
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.search),
-                    hintText: "Where to?",
+                    icon: Icon(Icons.circle_outlined),
+                    hintText: "Departure?",
                     border: InputBorder.none,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
-              TextField(
-                controller: pickupController,
-                decoration: const InputDecoration(
-                  hintText: "Pickup location",
-                  border: OutlineInputBorder(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black12),
+                ),
+                child: TextField(
+                  controller: dropoffController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.pin_drop_rounded),
+                    hintText: "Destination?",
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              ElevatedButton(
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
                 onPressed: calculate,
-                child: const Text("Calculate distance"),
+                child: const Text("Confirm location"),
               ),
 
               const SizedBox(height: 16),
               Text(result),
-
-              const SizedBox(height: 20),
-
-              const Text("Ride Now Page", style: TextStyle(fontSize: 22)),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 50),
+            ),
+            onPressed: () {},
+            child: const Text("Choose a car"),
           ),
         ),
       ),
