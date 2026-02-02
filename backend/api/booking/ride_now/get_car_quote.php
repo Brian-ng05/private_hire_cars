@@ -6,20 +6,32 @@ require_once __DIR__ . '/../../models/Car.php';
 
 global $data;
 
+
 /*
-Validate
+   VALIDATION
 */
 
-if (!isset($data['service_id'], $data['distance_km'])) {
-    sendResponse(400, "Missing fields", "service_id and distance_km required");
+if (!isset($data['service_id'], $data['quantity'])) {
+    sendResponse(400, "Missing fields", "service_id and quantity required");
 }
 
-$serviceId = intval($data['service_id']);
-$distance  = floatval($data['distance_km']);
+$serviceId = (int)$data['service_id'];
+$quantity  = (float)$data['quantity'];
+$sort      = $data['sort'] ?? Car::SORT_PRICE_ASC;
 
-if ($distance <= 0) {
-    sendResponse(400, "Invalid distance", "distance_km must be > 0");
+
+if ($serviceId <= 0) {
+    sendResponse(400, "Invalid service_id", "service_id must be > 0");
 }
+
+if ($quantity <= 0) {
+    sendResponse(400, "Invalid quantity", "quantity must be > 0");
+}
+
+
+/*
+   BUSINESS LOGIC
+*/
 
 try {
 
@@ -27,18 +39,29 @@ try {
 
     $vehicles = $carModel->getVehiclesWithEstimatedPrice(
         $serviceId,
-        $distance
+        $quantity,
+        $sort
     );
+
+    if (!$vehicles) {
+        sendResponse(404, "No vehicles available", []);
+    }
 
 } catch (PDOException $e) {
 
-    error_log($e->getMessage());
+    error_log("Get quote error: " . $e->getMessage());
 
     sendResponse(500, "Database error", "Internal server error");
 }
 
+
+/*
+   RESPONSE
+*/
+
 sendResponse(200, "Success", [
     "service_id" => $serviceId,
-    "distance_km" => $distance,
-    "vehicles" => $vehicles
+    "quantity"   => $quantity,
+    "sort"       => $sort,
+    "vehicles"   => $vehicles
 ]);
