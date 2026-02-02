@@ -18,6 +18,17 @@ class _RideNowPageState extends State<RideNowPage> {
 
   String result = "";
 
+  bool isLoading = false;
+  bool isLocked = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    pickupController.addListener(_unlockButton);
+    dropoffController.addListener(_unlockButton);
+  }
+
   @override
   void dispose() {
     pickupController.dispose();
@@ -25,24 +36,47 @@ class _RideNowPageState extends State<RideNowPage> {
     super.dispose();
   }
 
-  Future<void> calculate() async {
-    final pickup = await geocode(pickupController.text);
-    final dropoff = await geocode(dropoffController.text);
-
-    if (pickup == null || dropoff == null) {
-      setState(() {
-        result = "Address not found";
-      });
-      return;
-    }
-
-    final km = calculateDistance(pickup, dropoff);
-
+  // ================= HELPER =================
+  void _unlockButton() {
     setState(() {
-      result = "${km.toStringAsFixed(2)} km";
+      isLocked = false;
+      result = "";
     });
   }
 
+  bool get canSubmit =>
+      pickupController.text.isNotEmpty &&
+      dropoffController.text.isNotEmpty &&
+      !isLoading &&
+      !isLocked;
+
+  // ================= API CALL =================
+  Future<void> calculate() async {
+    if (!canSubmit) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      final distance = await DistanceApi.calculateDistance(
+        pickupController.text.trim(),
+        dropoffController.text.trim(),
+      );
+
+      setState(() {
+        result = "${distance.distanceKm.toStringAsFixed(2)} km";
+        isLocked = true;
+      });
+    } catch (e) {
+      setState(() {
+        result = e.toString();
+      });
+    } finally {
+      if (!mounted) return;
+      setState(() => isLoading = false);
+    }
+  }
+
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,60 +91,62 @@ class _RideNowPageState extends State<RideNowPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black12),
-                ),
-                child: TextField(
-                  controller: pickupController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.circle_outlined),
-                    hintText: "Departure?",
-                    border: InputBorder.none,
-                  ),
-                ),
+              /// PICKUP
+              _buildInput(
+                controller: pickupController,
+                icon: Icons.circle_outlined,
+                hint: "Departure?",
               ),
 
               const SizedBox(height: 20),
 
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.black12),
-                ),
-                child: TextField(
-                  controller: dropoffController,
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.pin_drop_rounded),
-                    hintText: "Destination?",
-                    border: InputBorder.none,
-                  ),
-                ),
+              /// DROPOFF
+              _buildInput(
+                controller: dropoffController,
+                icon: Icons.pin_drop_rounded,
+                hint: "Destination?",
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
+              /// CONFIRM BUTTON
               FilledButton(
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                onPressed: calculate,
-                child: const Text("Confirm location"),
+                onPressed: canSubmit ? calculate : null,
+                child: isLoading
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text("Confirm location"),
               ),
 
-              const SizedBox(height: 16),
-              Text(result),
+              const SizedBox(height: 20),
+
+              /// RESULT CARD
+              if (result.isNotEmpty)
+                Text(
+                  "The distance is: $result",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
             ],
           ),
         ),
       ),
+
+      /// BOTTOM BUTTON
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -120,9 +156,32 @@ class _RideNowPageState extends State<RideNowPage> {
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
             ),
-            onPressed: () {},
+            onPressed: isLocked ? () {} : null,
             child: const Text("Choose a car"),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInput({
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.black12),
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          icon: Icon(icon),
+          hintText: hint,
+          border: InputBorder.none,
         ),
       ),
     );
