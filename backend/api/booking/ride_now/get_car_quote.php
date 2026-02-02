@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '/../utils/api_common.php';
-require_once __DIR__ . '/../database.php';
-require_once __DIR__ . '/../models/Car.php';
+require_once __DIR__ . '/../../../utils/api_common.php';
+require_once __DIR__ . '/../../../database.php';
+require_once __DIR__ . '/../../../models/Car.php';
 
 global $data;
 
