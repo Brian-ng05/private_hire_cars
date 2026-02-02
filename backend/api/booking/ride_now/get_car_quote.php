@@ -1,8 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../../utils/api_common.php';
-require_once __DIR__ . '/../../../database.php';
-require_once __DIR__ . '/../../../models/Car.php';
+$BASE = realpath(__DIR__ . '/../../../');
+
+require_once $BASE . '/utils/api_common.php';
+require_once $BASE . '/database.php';
+require_once $BASE . '/models/Car.php';
+
 
 global $data;
 
