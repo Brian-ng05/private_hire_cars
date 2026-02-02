@@ -54,19 +54,19 @@ class Car {
     /*
      * Calculate price according service_type
      */
-    private function calculatePrice(array $row, float $distance): float
+    private function calculatePrice(array $row, float $quantity): float
     {
         switch ($row['service_type']) {
 
             case 'DISTANCE':
                 return $row['base_fee'] +
-                       ($row['price_per_km'] * $distance);
+                       ($row['price_per_km'] * $quantity);
 
             case 'HOURLY':
-                return $row['price_per_hour'] * $distance;
+                return $row['price_per_hour'] * $quantity;
 
             case 'DAILY':
-                return $row['price_per_day'] * $distance;
+                return $row['price_per_day'] * $quantity;
 
             default:
                 return 0;
@@ -78,7 +78,7 @@ class Car {
      */
     public function getVehiclesWithEstimatedPrice(
         int $serviceId,
-        float $distance
+        float $quantity
     ): array
     {
         $rows = $this->fetchVehiclesWithPricing($serviceId);
@@ -87,13 +87,23 @@ class Car {
 
         foreach ($rows as $r) {
 
-            $r['estimated_price'] = $this->calculatePrice($r, $distance);
+            $estimatedPrice = $this->calculatePrice($r, $quantity);
 
-            $result[] = $r;
+            $result[] = [
+                'vehicle_id'         => (int)$r['vehicle_id'],
+                'name'               => $r['name'],
+                'image_url'          => $r['image_url'],
+                'vehicle_type_id'    => (int)$r['vehicle_type_id'],
+                'type_name'          => $r['type_name'],
+                'passenger_capacity' => (int)$r['passenger_capacity'],
+
+                'estimated_price'    => (float)$estimatedPrice
+            ];
         }
 
         return $result;
     }
+
 }
 
 ?>
