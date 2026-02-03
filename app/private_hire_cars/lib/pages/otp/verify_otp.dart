@@ -94,6 +94,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
 
           FilledButton(
             onPressed: loading ? null : verify,
+            style: FilledButton.styleFrom(backgroundColor: Colors.black),
             child: loading
                 ? const CircularProgressIndicator()
                 : const Text("Next"),

@@ -76,6 +76,7 @@ class _RequestOtpPageState extends State<RequestOtpPage> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
+                style: FilledButton.styleFrom(backgroundColor: Colors.black),
                 onPressed: loading ? null : next,
                 child: loading
                     ? const CircularProgressIndicator()

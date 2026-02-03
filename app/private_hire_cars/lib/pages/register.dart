@@ -101,6 +101,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: loading ? null : createAccount,
+                style: FilledButton.styleFrom(backgroundColor: Colors.black),
                 child: loading
                     ? const CircularProgressIndicator()
                     : const Text("Register"),
