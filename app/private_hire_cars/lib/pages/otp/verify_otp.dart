@@ -75,6 +75,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(),
       body: Column(
         children: [

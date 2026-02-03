@@ -48,6 +48,7 @@ class _RequestOtpPageState extends State<RequestOtpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(24),

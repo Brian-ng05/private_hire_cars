@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(
         title: const Text("Private Hire Cars"),
         centerTitle: true,
@@ -120,6 +121,47 @@ class _LoginPageState extends State<LoginPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Text("Login"),
+              ),
+
+              const SizedBox(height: 24),
+
+              Row(
+                children: const [
+                  Expanded(child: Divider(thickness: 1)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      "or Log in with",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 113, 109, 109),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Divider(thickness: 1)),
+                ],
+              ),
+
+              /// GOOGLE LOGIN
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      // TODO: GOOGLE Sign In
+                    },
+                    style: OutlinedButton.styleFrom(
+                      fixedSize: const Size(60, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Image.asset(
+                      'assets/icon/google_icon.png',
+                      height: 28,
+                    ),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 20),
