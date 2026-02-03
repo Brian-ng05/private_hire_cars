@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff6f7f9),
+      backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
       appBar: AppBar(
         title: const Text("Private Hire Cars"),
         centerTitle: true,
@@ -142,29 +142,29 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               /// GOOGLE LOGIN
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      // TODO: GOOGLE Sign In
-                    },
-                    style: OutlinedButton.styleFrom(
-                      fixedSize: const Size(60, 60),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Image.asset(
-                      'assets/icon/google_icon.png',
-                      height: 28,
-                    ),
+              const SizedBox(height: 24),
+
+              OutlinedButton(
+                onPressed: () {
+                  // TODO: GOOGLE Sign In
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                ],
+                  side: const BorderSide(color: Colors.grey),
+                  backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icon/google_icon.png', height: 22),
+                  ],
+                ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               /// SIGN UP
               Row(
