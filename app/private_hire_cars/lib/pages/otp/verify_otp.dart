@@ -75,6 +75,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(),
       body: Column(
         children: [
@@ -94,6 +95,7 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
 
           FilledButton(
             onPressed: loading ? null : verify,
+            style: FilledButton.styleFrom(backgroundColor: Colors.black),
             child: loading
                 ? const CircularProgressIndicator()
                 : const Text("Next"),
