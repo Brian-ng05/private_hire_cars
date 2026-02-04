@@ -69,6 +69,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xfff6f7f9),
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -101,6 +102,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: loading ? null : createAccount,
+                style: FilledButton.styleFrom(backgroundColor: Colors.black),
                 child: loading
                     ? const CircularProgressIndicator()
                     : const Text("Register"),
