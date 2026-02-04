@@ -96,7 +96,7 @@ class AuthService {
     }
   }
 
-  static Future<ResetPasswordDetail> resetPassword({
+  static Future<void> resetPassword({
     required int verificationId,
     required String password,
     required String passwordConfirm,
@@ -113,9 +113,7 @@ class AuthService {
 
     final data = jsonDecode(response.body);
 
-    if (response.statusCode == 201) {
-      return ResetPasswordDetail.fromJson(data);
-    } else {
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       throw Exception(data['summary'] ?? "Reset password failed");
     }
   }

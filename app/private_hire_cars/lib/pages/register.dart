@@ -47,8 +47,6 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
         passwordConfirm: confirm.text,
       );
 
-      showMsg("Account created successfully");
-
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -70,9 +68,9 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xfff6f7f9),
-      appBar: AppBar(),
+      appBar: AppBar(backgroundColor: const Color(0xfff6f7f9)),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             const Text(
@@ -82,10 +80,29 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
             const SizedBox(height: 20),
 
+            // TextField(
+            //   controller: pw,
+            //   obscureText: true,
+            //   decoration: const InputDecoration(labelText: "Password"),
+            // ),
+
+            // const SizedBox(height: 15),
+
+            // TextField(
+            //   controller: confirm,
+            //   obscureText: true,
+            //   decoration: const InputDecoration(labelText: "Confirm Password"),
+            // ),
             TextField(
               controller: pw,
               obscureText: true,
-              decoration: const InputDecoration(labelText: "Password"),
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
             ),
 
             const SizedBox(height: 15),
@@ -93,16 +110,24 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             TextField(
               controller: confirm,
               obscureText: true,
-              decoration: const InputDecoration(labelText: "Confirm Password"),
+              decoration: InputDecoration(
+                labelText: "Confirm Password",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                prefixIcon: const Icon(Icons.lock_outline),
+              ),
             ),
-
             const SizedBox(height: 30),
 
             SizedBox(
               width: double.infinity,
               child: FilledButton(
                 onPressed: loading ? null : createAccount,
-                style: FilledButton.styleFrom(backgroundColor: Colors.black),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                  backgroundColor: Colors.black,
+                ),
                 child: loading
                     ? const CircularProgressIndicator()
                     : const Text("Register"),

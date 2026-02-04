@@ -49,7 +49,7 @@ class VehicleCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "\$${vehicle.price.toStringAsFixed(2)}",
+                  "\£${vehicle.price.toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

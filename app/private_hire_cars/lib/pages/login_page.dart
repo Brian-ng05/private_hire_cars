@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
       appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
         title: const Text("Private Hire Cars"),
         centerTitle: true,
         titleTextStyle: const TextStyle(
@@ -105,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              // const SizedBox(height: 12),
 
               /// LOGIN BUTTON
               FilledButton(
@@ -123,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                     : const Text("Login"),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
               Row(
                 children: const [
@@ -142,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               /// GOOGLE LOGIN
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
               OutlinedButton(
                 onPressed: () {

@@ -90,11 +90,12 @@ class _SelectRidePageState extends State<SelectRidePage> {
                 final e = SortType.values[i];
 
                 return ChoiceChip(
-                  avatar: Icon(_getIcon(e), size: 18),
+                  avatar: Icon(_getIcon(e), size: 18, color: Colors.black),
                   label: Text(e.label),
                   selected: e == currentSort,
                   onSelected: (_) => changeSort(e),
                   showCheckmark: false,
+                  backgroundColor: backgroundColor,
                 );
               },
             ),
