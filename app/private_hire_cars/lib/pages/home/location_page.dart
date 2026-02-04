@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:private_hire_cars/pages/home/car_quote_page.dart';
 import 'package:private_hire_cars/services/location_service.dart';
 
 const backgroundColor = Color(0xfff6f7f9);
 
-class RideNowPage extends StatefulWidget {
-  const RideNowPage({super.key, required this.title});
+class LocationPage extends StatefulWidget {
+  const LocationPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<RideNowPage> createState() => _RideNowPageState();
+  State<LocationPage> createState() => _LocationPageState();
 }
 
-class _RideNowPageState extends State<RideNowPage> {
+class _LocationPageState extends State<LocationPage> {
   final pickupController = TextEditingController();
   final dropoffController = TextEditingController();
 
-  String result = "";
+  double result = 0.0;
 
   bool isLoading = false;
   bool isLocked = false;
@@ -40,7 +41,7 @@ class _RideNowPageState extends State<RideNowPage> {
   void _unlockButton() {
     setState(() {
       isLocked = false;
-      result = "";
+      result = 0;
     });
   }
 
@@ -63,13 +64,16 @@ class _RideNowPageState extends State<RideNowPage> {
       );
 
       setState(() {
-        result = "${distance.distanceKm.toStringAsFixed(2)} km";
+        result = distance.distanceKm;
         isLocked = true;
       });
     } catch (e) {
       setState(() {
-        result = e.toString();
+        result = 0;
       });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (!mounted) return;
       setState(() => isLoading = false);
@@ -132,9 +136,9 @@ class _RideNowPageState extends State<RideNowPage> {
               const SizedBox(height: 20),
 
               /// RESULT CARD
-              if (result.isNotEmpty)
+              if (result > 0.0)
                 Text(
-                  "The distance is: $result",
+                  "The distance is: $result km",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -156,7 +160,16 @@ class _RideNowPageState extends State<RideNowPage> {
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
             ),
-            onPressed: isLocked ? () {} : null,
+            onPressed: isLocked
+                ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SelectRidePage(quantity: result),
+                      ),
+                    );
+                  }
+                : null,
             child: const Text("Choose a car"),
           ),
         ),

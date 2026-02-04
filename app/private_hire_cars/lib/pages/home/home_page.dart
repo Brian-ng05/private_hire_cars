@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:private_hire_cars/classes/homePage/service_card.dart';
-import 'package:private_hire_cars/pages/home/airport_page.dart';
-import 'package:private_hire_cars/pages/home/ride_now_page.dart';
+import 'package:private_hire_cars/pages/home/location_page.dart';
+import 'package:private_hire_cars/pages/home/meet_and_greet.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -74,13 +74,14 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ServiceCard(
                     icon: Icons.directions_car,
-                    title: "Ride now",
-                    subtitle: "Book a trip",
+                    title: "Airport & Hotel transfer",
+                    subtitle: "Pick up at airport",
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const RideNowPage(title: "Transport"),
+                          builder: (_) =>
+                              const LocationPage(title: "Transport"),
                         ),
                       );
                     },
@@ -88,13 +89,14 @@ class _HomePageState extends State<HomePage> {
 
                   ServiceCard(
                     icon: Icons.flight,
-                    title: "Airport",
-                    subtitle: "Pick up at airport",
+                    title: "Meet & Greet",
+                    subtitle: "",
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const AirportPage(title: "Transport"),
+                          builder: (_) =>
+                              const MeetAndGreet(title: "Transport"),
                         ),
                       );
                     },
@@ -102,12 +104,13 @@ class _HomePageState extends State<HomePage> {
                   ServiceCard(
                     icon: Icons.route_outlined,
                     title: "Intercity",
-                    subtitle: "Long distance",
+                    subtitle: "Local/Long distance",
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const RideNowPage(title: "Transport"),
+                          builder: (_) =>
+                              const LocationPage(title: "Transport"),
                         ),
                       );
                     },
@@ -120,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const RideNowPage(title: "Transport"),
+                          builder: (_) =>
+                              const LocationPage(title: "Transport"),
                         ),
                       );
                     },
