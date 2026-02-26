@@ -5,8 +5,6 @@ import 'package:private_hire_cars/classes/auth/recovery_password_class.dart';
 import 'package:private_hire_cars/classes/auth/register.dart';
 import 'package:private_hire_cars/classes/auth/request_otp.dart';
 import 'package:private_hire_cars/classes/auth/verify_otp.dart';
-import 'package:private_hire_cars/classes/profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String baseUrl =
@@ -22,30 +20,9 @@ class AuthService {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      final loginResponse = LoginResponse.fromJson(data);
-
-      final prefs = await SharedPreferences.getInstance();
-
-      await prefs.setInt('user_id', loginResponse.user.userId);
-      return loginResponse;
+      return LoginResponse.fromJson(data);
     } else {
       throw Exception(data['summary']);
-    }
-  }
-
-  static Future<Profile> getProfile({required int userId}) async {
-    final response = await http.post(
-      Uri.parse("$baseUrl/profile/get_profile.php"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"user_id": userId}),
-    );
-
-    final json = jsonDecode(response.body);
-
-    if (response.statusCode == 200 && json['status'] == 200) {
-      return Profile.fromJson(json['detailed']);
-    } else {
-      throw Exception(json['summary']);
     }
   }
 
