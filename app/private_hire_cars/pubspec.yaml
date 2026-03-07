@@ -39,6 +39,7 @@ dependencies:
   http: ^1.6.0
   latlong2: ^0.9.1
   flutter_launcher_icons: ^0.14.4
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icon/
+    - assets/data/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

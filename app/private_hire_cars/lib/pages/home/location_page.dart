@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:private_hire_cars/pages/home/car_quote_page.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:private_hire_cars/pages/home/select_ride_page.dart';
 import 'package:private_hire_cars/services/location_service.dart';
+import 'package:latlong2/latlong.dart';
 
 const backgroundColor = Color(0xfff6f7f9);
 
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -21,13 +23,37 @@ class _LocationPageState extends State<LocationPage> {
 
   bool isLoading = false;
   bool isLocked = false;
+  bool isValidPickupTime(DateTime time) {
+    final nowPlus15 = DateTime.now().add(const Duration(minutes: 15));
+    return time.isAfter(nowPlus15);
+  }
+
+  /// DATE TIME STATE
+  int selectedYear = DateTime.now().year;
+  int selectedMonth = DateTime.now().month;
+  int selectedDay = DateTime.now().day;
+  int selectedHour = DateTime.now().hour;
+  int selectedMinute = DateTime.now().minute;
+
+  DateTime? finalDateTime;
 
   @override
   void initState() {
     super.initState();
 
-    pickupController.addListener(_unlockButton);
-    dropoffController.addListener(_unlockButton);
+    pickupController.addListener(_unlockAll);
+    dropoffController.addListener(_unlockAll);
+
+    /// DEFAULT TIME = NOW + 15 MINUTES
+    final initial = DateTime.now().add(const Duration(minutes: 15));
+
+    selectedYear = initial.year;
+    selectedMonth = initial.month;
+    selectedDay = initial.day;
+    selectedHour = initial.hour;
+    selectedMinute = initial.minute;
+
+    finalDateTime = initial;
   }
 
   @override
@@ -37,40 +63,48 @@ class _LocationPageState extends State<LocationPage> {
     super.dispose();
   }
 
-  // ================= HELPER =================
-  void _unlockButton() {
+  void _unlockAll() {
+    if (isLocked) return;
+
     setState(() {
-      isLocked = false;
       result = 0;
+      finalDateTime = null;
     });
   }
 
   bool get canSubmit =>
-      pickupController.text.isNotEmpty &&
-      dropoffController.text.isNotEmpty &&
+      pickupController.text.trim().isNotEmpty &&
+      dropoffController.text.trim().isNotEmpty &&
       !isLoading &&
       !isLocked;
-
-  // ================= API CALL =================
   Future<void> calculate() async {
     if (!canSubmit) return;
 
     setState(() => isLoading = true);
 
     try {
-      final distance = await DistanceApi.calculateDistance(
-        pickupController.text.trim(),
-        dropoffController.text.trim(),
+      final pickupResult = await geocode(pickupController.text.trim());
+      final dropoffResult = await geocode(dropoffController.text.trim());
+
+      if (pickupResult == null || dropoffResult == null) {
+        throw Exception("Address not found");
+      }
+
+      final km = calculateDistance(
+        pickupResult.location,
+        dropoffResult.location,
       );
 
       setState(() {
-        result = distance.distanceKm;
+        result = km;
         isLocked = true;
       });
+
+      pickupController.text = pickupResult.displayName;
+      dropoffController.text = dropoffResult.displayName;
     } catch (e) {
-      setState(() {
-        result = 0;
-      });
+      setState(() => result = 0);
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -80,7 +114,45 @@ class _LocationPageState extends State<LocationPage> {
     }
   }
 
-  // ================= UI =================
+  /// UPDATE DATE TIME WHEN USER SCROLLS
+  void updateDateTime() {
+    finalDateTime = DateTime(
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+      selectedHour,
+      selectedMinute,
+    );
+
+    setState(() {});
+  }
+
+  /// DATE HELPERS
+  bool isLeapYear(int year) {
+    if (year % 400 == 0) return true;
+    if (year % 100 == 0) return false;
+    return year % 4 == 0;
+  }
+
+  int daysInMonth(int year, int month) {
+    switch (month) {
+      case 2:
+        return isLeapYear(year) ? 29 : 28;
+      case 4:
+      case 6:
+      case 9:
+      case 11:
+        return 30;
+      default:
+        return 31;
+    }
+  }
+
+  List<int> get yearList {
+    final currentYear = DateTime.now().year;
+    return List.generate(6, (index) => currentYear + index);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +167,6 @@ class _LocationPageState extends State<LocationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// PICKUP
               _buildInput(
                 controller: pickupController,
                 icon: Icons.circle_outlined,
@@ -104,7 +175,6 @@ class _LocationPageState extends State<LocationPage> {
 
               const SizedBox(height: 20),
 
-              /// DROPOFF
               _buildInput(
                 controller: dropoffController,
                 icon: Icons.pin_drop_rounded,
@@ -113,7 +183,7 @@ class _LocationPageState extends State<LocationPage> {
 
               const SizedBox(height: 24),
 
-              /// CONFIRM BUTTON
+              /// CONFIRM LOCATION
               FilledButton(
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -135,22 +205,180 @@ class _LocationPageState extends State<LocationPage> {
 
               const SizedBox(height: 20),
 
-              /// RESULT CARD
-              if (result > 0.0)
+              if (result > 0.0) ...[
                 Text(
                   "The distance is: $result km",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
                   ),
                 ),
+
+                const SizedBox(height: 25),
+
+                /// DATE TIME PICKER
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      /// DAY
+                      Expanded(
+                        child: CupertinoPicker(
+                          itemExtent: 40,
+                          scrollController: FixedExtentScrollController(
+                            initialItem: selectedDay - 1,
+                          ),
+                          onSelectedItemChanged: (index) {
+                            selectedDay = index + 1;
+                            updateDateTime();
+                          },
+                          children: List.generate(
+                            daysInMonth(selectedYear, selectedMonth),
+                            (index) => Center(
+                              child: Text(
+                                (index + 1).toString().padLeft(2, '0'),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// MONTH
+                      Expanded(
+                        child: CupertinoPicker(
+                          itemExtent: 40,
+                          scrollController: FixedExtentScrollController(
+                            initialItem: selectedMonth - 1,
+                          ),
+                          onSelectedItemChanged: (index) {
+                            selectedMonth = index + 1;
+
+                            int maxDay = daysInMonth(
+                              selectedYear,
+                              selectedMonth,
+                            );
+                            if (selectedDay > maxDay) {
+                              selectedDay = maxDay;
+                            }
+
+                            updateDateTime();
+                          },
+                          children: List.generate(
+                            12,
+                            (index) => Center(
+                              child: Text(
+                                (index + 1).toString().padLeft(2, '0'),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// YEAR
+                      Expanded(
+                        child: CupertinoPicker(
+                          itemExtent: 40,
+                          scrollController: FixedExtentScrollController(
+                            initialItem: 0,
+                          ),
+                          onSelectedItemChanged: (index) {
+                            selectedYear = yearList[index];
+
+                            int maxDay = daysInMonth(
+                              selectedYear,
+                              selectedMonth,
+                            );
+                            if (selectedDay > maxDay) {
+                              selectedDay = maxDay;
+                            }
+
+                            updateDateTime();
+                          },
+                          children: yearList
+                              .map(
+                                (year) => Center(
+                                  child: Text(
+                                    year.toString(),
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+
+                      /// HOUR
+                      Expanded(
+                        child: CupertinoPicker(
+                          itemExtent: 40,
+                          scrollController: FixedExtentScrollController(
+                            initialItem: selectedHour,
+                          ),
+                          onSelectedItemChanged: (index) {
+                            selectedHour = index;
+                            updateDateTime();
+                          },
+                          children: List.generate(
+                            24,
+                            (index) => Center(
+                              child: Text(
+                                index.toString().padLeft(2, '0'),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// MINUTE
+                      Expanded(
+                        child: CupertinoPicker(
+                          itemExtent: 40,
+                          scrollController: FixedExtentScrollController(
+                            initialItem: selectedMinute,
+                          ),
+                          onSelectedItemChanged: (index) {
+                            selectedMinute = index;
+                            updateDateTime();
+                          },
+                          children: List.generate(
+                            60,
+                            (index) => Center(
+                              child: Text(
+                                index.toString().padLeft(2, '0'),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                if (finalDateTime != null)
+                  Text(
+                    "Pickup time: ${DateFormat('HH:mm - dd/MM/yyyy').format(finalDateTime!)}",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
             ],
           ),
         ),
       ),
 
-      /// BOTTOM BUTTON
+      /// CHOOSE CAR
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -160,12 +388,28 @@ class _LocationPageState extends State<LocationPage> {
               foregroundColor: Colors.white,
               minimumSize: const Size(double.infinity, 50),
             ),
-            onPressed: isLocked
+            onPressed: (isLocked && finalDateTime != null)
                 ? () {
+                    if (!isValidPickupTime(finalDateTime!)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Pickup time must be at least 15 minutes from now",
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SelectRidePage(quantity: result),
+                        builder: (_) => SelectRidePage(
+                          quantity: result,
+                          departure: pickupController.text,
+                          destination: dropoffController.text,
+                          time: finalDateTime!,
+                        ),
                       ),
                     );
                   }

@@ -65,30 +65,45 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 16),
 
               GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
+                crossAxisCount: 3, // 3 columns
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 1.5,
+                childAspectRatio: 0.8,
                 children: [
                   ServiceCard(
                     icon: Icons.directions_car,
-                    title: "Airport & Hotel transfer",
-                    subtitle: "Pick up at airport",
+                    title: "Hotel transfer",
+                    subtitle: "",
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const LocationPage(title: "Transport"),
+                              const LocationPage(title: "Hotel Transfer"),
                         ),
                       );
                     },
                   ),
 
                   ServiceCard(
-                    icon: Icons.flight,
+                    icon: Icons.local_airport,
+                    title: "Airport transfer",
+                    subtitle: "",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const LocationPage(title: "Airport Transfer"),
+                        ),
+                      );
+                    },
+                  ),
+
+                  ServiceCard(
+                    icon: Icons.emoji_people,
                     title: "Meet & Greet",
                     subtitle: "",
                     onTap: () {
@@ -96,11 +111,12 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const MeetAndGreet(title: "Transport"),
+                              const MeetAndGreet(title: "Meet & Greet"),
                         ),
                       );
                     },
                   ),
+
                   ServiceCard(
                     icon: Icons.route_outlined,
                     title: "Intercity",
@@ -115,6 +131,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                   ),
+
                   ServiceCard(
                     icon: Icons.access_time,
                     title: "Daily hire",
@@ -131,7 +148,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 30),
 
               const Text(

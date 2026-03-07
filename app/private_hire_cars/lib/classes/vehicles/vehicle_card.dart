@@ -3,8 +3,13 @@ import 'package:private_hire_cars/classes/vehicles/vehicle.dart';
 
 class VehicleCard extends StatelessWidget {
   final Vehicle vehicle;
+  final double distanceKm;
 
-  const VehicleCard({super.key, required this.vehicle});
+  const VehicleCard({
+    super.key,
+    required this.vehicle,
+    required this.distanceKm,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +17,10 @@ class VehicleCard extends StatelessWidget {
       elevation: 3,
       color: const Color(0xfff2f3f5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      margin: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// ===== IMAGE =====
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Image.asset(
@@ -24,10 +29,19 @@ class VehicleCard extends StatelessWidget {
               width: double.infinity,
               fit: BoxFit.cover,
 
-              cacheWidth: 500,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 150,
+                  color: Colors.grey[300],
+                  child: const Center(
+                    child: Icon(Icons.directions_car, size: 40),
+                  ),
+                );
+              },
             ),
           ),
 
+          /// ===== INFO =====
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -49,7 +63,7 @@ class VehicleCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "\£${vehicle.price.toStringAsFixed(2)}",
+                  "£${(vehicle.pricing.baseFare + (distanceKm * vehicle.pricing.pricePerKm)).toStringAsFixed(2)}",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
