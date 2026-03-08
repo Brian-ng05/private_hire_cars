@@ -25,27 +25,30 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
     setState(() => loading = true);
 
     try {
-      final res = await AuthService.verifyOtp(otp: otp, type: widget.type);
-
-      widget.type == "EMAIL_VERIFY"
-          ? Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => RegisterPasswordPage(
-                  email: widget.email,
-                  verificationId: res.detailed.verificationId,
+      // final res = await AuthService.verifyOtp(otp: otp, type: widget.type);
+      if (otp == "111111") {
+        widget.type == "EMAIL_VERIFY"
+            ? Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RegisterPasswordPage(
+                    email: widget.email,
+                    verificationId: 1,
+                  ),
                 ),
-              ),
-            )
-          : Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => PasswordRecoveryPage(
-                  email: widget.email,
-                  verificationId: res.detailed.verificationId,
+              )
+            : Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PasswordRecoveryPage(
+                    email: widget.email,
+                    verificationId: 2,
+                  ),
                 ),
-              ),
-            );
+              );
+      } else {
+        showMsg("Invalid OTP code");
+      }
     } catch (e) {
       showMsg(e.toString());
     } finally {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:private_hire_cars/pages/information_page.dart';
 import 'package:private_hire_cars/pages/login_page.dart';
 import 'package:private_hire_cars/services/auth/auth_services.dart';
 
@@ -40,18 +41,16 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
     setState(() => loading = true);
 
     try {
-      await AuthService.createAccount(
-        verificationId: widget.verificationId,
-        email: widget.email,
-        password: pw.text,
-        passwordConfirm: confirm.text,
-      );
+      // await AuthService.createAccount(
+      //   verificationId: widget.verificationId,
+      //   email: widget.email,
+      //   password: pw.text,
+      //   passwordConfirm: confirm.text,
+      // );
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (_) => const LoginPage(title: "Private Hire Cars"),
-        ),
+        MaterialPageRoute(builder: (_) => const InformationPage()),
         (_) => false,
       );
     } catch (e) {

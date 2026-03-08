@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:private_hire_cars/classes/vehicles/vehicle.dart';
 import 'package:private_hire_cars/data/notifiers.dart';
-import 'package:private_hire_cars/pages/trips_page.dart';
+import 'package:private_hire_cars/pages/home/coupon_page.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
 
-class ReviewOrderPage extends StatelessWidget {
+class ReviewOrderPage extends StatefulWidget {
   const ReviewOrderPage({
     super.key,
     required this.quantity,
@@ -22,10 +22,22 @@ class ReviewOrderPage extends StatelessWidget {
   final Vehicle vehicle;
 
   @override
+  State<ReviewOrderPage> createState() => _ReviewOrderPageState();
+}
+
+class _ReviewOrderPageState extends State<ReviewOrderPage> {
+  double discountPercent = 15; // mặc định WELCOME15
+
+  @override
   Widget build(BuildContext context) {
-    final totalPrice =
-        (vehicle.pricing.baseFare + (quantity * vehicle.pricing.pricePerKm))
-            .toStringAsFixed(2);
+    final originalPrice =
+        widget.vehicle.pricing.baseFare +
+        (widget.quantity * widget.vehicle.pricing.pricePerKm);
+
+    final finalPrice = originalPrice - (originalPrice * discountPercent / 100);
+
+    final oldPriceText = originalPrice.toStringAsFixed(2);
+    final newPriceText = finalPrice.toStringAsFixed(2);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -41,12 +53,18 @@ class ReviewOrderPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// ===== BOOKING DETAILS =====
               Column(
                 children: [
-                  /// ===== BOOKING DETAILS =====
-                  const Text(
-                    "Booking details",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Container(
+                    width: double.infinity,
+                    child: const Text(
+                      "Booking details",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -54,7 +72,6 @@ class ReviewOrderPage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// ICON + LINE COLUMN
                       Column(
                         children: [
                           const Icon(Icons.circle_outlined),
@@ -71,12 +88,10 @@ class ReviewOrderPage extends StatelessWidget {
 
                       const SizedBox(width: 12),
 
-                      /// TEXT COLUMN
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// DEPARTURE
                             const Text(
                               "Departure",
                               style: TextStyle(fontWeight: FontWeight.w600),
@@ -85,7 +100,7 @@ class ReviewOrderPage extends StatelessWidget {
                             const SizedBox(height: 4),
 
                             Text(
-                              departure,
+                              widget.departure,
                               style: const TextStyle(
                                 color: Color.fromARGB(255, 52, 52, 52),
                               ),
@@ -93,7 +108,6 @@ class ReviewOrderPage extends StatelessWidget {
 
                             const SizedBox(height: 20),
 
-                            /// DESTINATION
                             const Text(
                               "Destination",
                               style: TextStyle(fontWeight: FontWeight.w600),
@@ -102,7 +116,7 @@ class ReviewOrderPage extends StatelessWidget {
                             const SizedBox(height: 4),
 
                             Text(
-                              destination,
+                              widget.destination,
                               style: const TextStyle(
                                 color: Color.fromARGB(255, 52, 52, 52),
                               ),
@@ -116,6 +130,8 @@ class ReviewOrderPage extends StatelessWidget {
               ),
 
               const Divider(height: 30, thickness: 1),
+
+              /// ===== PICKUP TIME =====
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -131,12 +147,12 @@ class ReviewOrderPage extends StatelessWidget {
                           "Pickup time",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
+
                         const SizedBox(height: 4),
 
-                        /// ===== PICKUP TIME =====
-                        if (time != null)
+                        if (widget.time != null)
                           Text(
-                            DateFormat('HH:mm dd/MM/yyyy').format(time!),
+                            DateFormat('HH:mm dd/MM/yyyy').format(widget.time!),
                             style: const TextStyle(
                               fontSize: 16,
                               color: Color.fromARGB(255, 52, 52, 52),
@@ -147,7 +163,8 @@ class ReviewOrderPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+
+              const SizedBox(height: 20),
 
               /// ===== VEHICLE =====
               const Text(
@@ -165,13 +182,12 @@ class ReviewOrderPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// IMAGE
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
                       child: Image.asset(
-                        vehicle.imageUrl,
+                        widget.vehicle.imageUrl,
                         height: 150,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -187,11 +203,10 @@ class ReviewOrderPage extends StatelessWidget {
                       ),
                     ),
 
-                    /// INFO
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
-                        "${vehicle.name} / Capacity: ${vehicle.capacity}",
+                        "${widget.vehicle.name} / Capacity: ${widget.vehicle.capacity}",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -203,11 +218,51 @@ class ReviewOrderPage extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
+
+              /// ===== COUPONS =====
+              const Text(
+                "Apply Coupons",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+
+              GestureDetector(
+                onTap: () async {
+                  final double? discount = await Navigator.push<double>(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CouponsPage()),
+                  );
+
+                  if (discount != null) {
+                    setState(() {
+                      discountPercent = discount;
+                    });
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.local_offer_outlined),
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          "${discountPercent.toInt()}% Off for Online Booking",
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+
+                      const Icon(Icons.arrow_forward_ios, size: 16),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
 
+      /// ===== BOTTOM BAR =====
       bottomNavigationBar: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -218,7 +273,7 @@ class ReviewOrderPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// ===== TOTAL =====
+              /// PRICE ROW
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -227,19 +282,36 @@ class ReviewOrderPage extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
 
-                  Text(
-                    "£$totalPrice",
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      /// NEW PRICE
+                      Text(
+                        "£$newPriceText",
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      /// OLD PRICE
+                      Text(
+                        "£$oldPriceText",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
 
               const SizedBox(height: 20),
 
-              /// ===== BOOK BUTTON =====
+              /// BOOK BUTTON
               SizedBox(
                 width: double.infinity,
                 height: 50,

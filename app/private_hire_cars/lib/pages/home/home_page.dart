@@ -148,7 +148,45 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              GestureDetector(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                    border: Border.all(color: Colors.grey.shade300, width: 1),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.phone),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          "Contact to the Admin Center",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
               const Text(
                 "Discount",
@@ -159,9 +197,9 @@ class _HomePageState extends State<HomePage> {
 
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  "https://images.unsplash.com/photo-1549924231-f129b911e442",
-                  height: 150,
+                child: Image.asset(
+                  "assets/images/banner.png",
+                  height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
