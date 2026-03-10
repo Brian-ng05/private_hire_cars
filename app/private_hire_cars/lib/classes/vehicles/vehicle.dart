@@ -19,7 +19,7 @@ class Vehicle {
       name: json['name'],
       imageUrl: json['image_url'],
       capacity: json['capacity'],
-      pricing: Pricing.fromJson(json['pricing']),
+      pricing: Pricing.fromJson(json['pricing'] ?? {}),
     );
   }
 }
@@ -37,9 +37,9 @@ class Pricing {
 
   factory Pricing.fromJson(Map<String, dynamic> json) {
     return Pricing(
-      baseFare: (json['base_fare'] as num).toDouble(),
-      pricePerKm: (json['price_per_km'] as num).toDouble(),
-      pricePerDay: (json['price_per_day'] as num).toDouble(),
+      baseFare: (json['base_fare'] ?? 0).toDouble(),
+      pricePerKm: (json['price_per_km'] ?? 0).toDouble(),
+      pricePerDay: (json['price_per_day'] ?? 0).toDouble(),
     );
   }
 }
