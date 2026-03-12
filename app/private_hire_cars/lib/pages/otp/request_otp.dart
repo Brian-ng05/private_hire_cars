@@ -27,7 +27,7 @@ class _RequestOtpPageState extends State<RequestOtpPage> {
     setState(() => loading = true);
 
     try {
-      // await AuthService.requestOtp(email: email, type: widget.type);
+      await AuthService.requestOtp(email: email, type: widget.type);
 
       Navigator.push(
         context,

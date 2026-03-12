@@ -228,10 +228,10 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     try {
-      // final response = await AuthService.login(email, password);
-      // await StorageService.saveUser(response);
+      final response = await AuthService.login(email, password);
+      await StorageService.saveUser(response);
 
-      // if (!mounted) return;
+      if (!mounted) return;
 
       Navigator.pushReplacement(
         context,

@@ -1,10 +1,13 @@
 <?php
 
+use models\MailService;
+
 require_once __DIR__ . '/../utils/api_common.php';
 require_once __DIR__ . '/../utils/validator.php';
 require_once __DIR__ . '/../database.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/EmailVerifications.php';
+require_once __DIR__ . '/../helpers/email_welcome_template.php';
 
 global $data;
 
@@ -47,6 +50,8 @@ try {
         sendResponse(409, "Email already registered", "This email is already in use");
     }
 
+    $conn->beginTransaction();
+
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
     $userId = $userModel->create($email, $passwordHash); 
@@ -55,7 +60,20 @@ try {
 
     $userModel->updateLastLogin($userId);
 
+    $conn->commit();
 
+    $emailBody = getWelcomeEmailBody();
+
+    try {
+        MailService::send(
+            "nguyenbao12122005@gmail.com",
+            "Welcome to Private Hire Car",
+            $emailBody
+        );
+    } catch (Exception $e) {
+        error_log("Mail send failed: " . $e->getMessage());
+    }
+    
     sendResponse(201, "Account created successfully", [
         "user_id" => $userId,
         "email"   => $email,

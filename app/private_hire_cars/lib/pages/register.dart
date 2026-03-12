@@ -41,12 +41,12 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
     setState(() => loading = true);
 
     try {
-      // await AuthService.createAccount(
-      //   verificationId: widget.verificationId,
-      //   email: widget.email,
-      //   password: pw.text,
-      //   passwordConfirm: confirm.text,
-      // );
+      await AuthService.createAccount(
+        verificationId: widget.verificationId,
+        email: widget.email,
+        password: pw.text,
+        passwordConfirm: confirm.text,
+      );
 
       Navigator.pushAndRemoveUntil(
         context,
