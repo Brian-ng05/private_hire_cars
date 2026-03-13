@@ -1,0 +1,123 @@
+/* Login Page Styles */
+body.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #333 0%, #000 100%);
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container {
+    background: var(--primary-white);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px var(--shadow-dark);
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.login-header h1 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    margin-top: 0;
+}
+
+.login-header p {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: var(--button-primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #333 0%, #000 100%);
+    color: var(--primary-white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-login .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 3px solid var(--primary-white);
+    animation: spin 0.9s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+}
