@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Recovery | Private HireCars</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body class="login-page">
+    <div class="recovery-container">
+        <div class="recovery-header">
+            <h1>Password Recovery</h1>
+            <p>Enter your email address and we'll send you OTP code to reset your password.</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="recoveryForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="operator@example.com" 
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                Send Recovery Code
+            </button>
+
+            <a href="../login.html" class="btn-back">Back to Login</a>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE = 'https://privatehirecars-production.up.railway.app';
+
+        const recoveryForm = document.getElementById('recoveryForm');
+        const emailInput = document.getElementById('email');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertBox = document.getElementById('alertBox');
+
+        function showAlert(message, type = 'error') {
+            alertBox.textContent = message;
+            alertBox.className = `alert show ${type}`;
+            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hideAlert() {
+            alertBox.className = 'alert';
+        }
+
+        recoveryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                showAlert('Please enter your email address.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/recovery_password.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to send recovery code.');
+                }
+
+                showAlert('Recovery code sent to your email! Check your inbox.', 'success');
+                setTimeout(() => {
+                    window.location.href = '../login.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Recovery error:', error);
+                showAlert(error.message || 'An error occurred. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Recovery Code';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management | Private HireCars</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>PRIVATE HIRECARS</h2>
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="booking.html">New Booking</a>
+            <a href="drivers.html">Driver Directory</a>
+            <a href="fleet.html" class="active">Fleet Management</a>
+            <a href="customers.html">Customer Queries</a>
+            <a href="offers.html">Special Offers</a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <div>
+                <h1>Fleet Management</h1>
+                <p style="color: #888;">Monitor and manage all 150+ vehicles in real-time.</p>
+            </div>
+            <div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
+        </header>
+
+        <section class="card">
+            <div class="filter-bar">
+                <input type="text" class="search-mini" placeholder="Search by Reg Number or Model...">
+                <select class="search-mini" style="width: 150px;">
+                    <option value="all">All Capacities</option>
+                    <option value="4">4 Seats</option>
+                    <option value="6">6 Seats</option>
+                    <option value="7">7+ Seats</option>
+                </select>
+                <button class="btn-primary">Filter</button>
+            </div>
+        </section>
+
+        <div class="fleet-grid">
+            <div class="card vehicle-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h4 style="margin: 0;">Mercedes-Benz E-Class</h4>
+                        <p style="color: #666; font-size: 0.8rem;">Reg: <strong>PHC-001</strong></p>
+                    </div>
+                    <span class="badge status-available">Available</span>
+                </div>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <p>Capacity: 4 Passengers</p>
+                <p>Mileage: 12,500 miles</p>
+                <button class="btn-primary" style="width: 100%; margin-top: 15px; background: #333;">View Details</button>
+            </div>
+
+            <div class="card vehicle-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h4 style="margin: 0;">Ford Galaxy (MPV)</h4>
+                        <p style="color: #666; font-size: 0.8rem;">Reg: <strong>PHC-009</strong></p>
+                    </div>
+                    <span class="badge status-available">Available</span>
+                </div>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <p>Capacity: 7 Passengers</p>
+                <p>Mileage: 45,000 miles</p>
+                <button class="btn-primary" style="width: 100%; margin-top: 15px; background: #333;">View Details</button>
+            </div>
+
+            <div class="card vehicle-card" style="border-left: 4px solid #e53e3e;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h4 style="margin: 0;">Toyota Prius</h4>
+                        <p style="color: #666; font-size: 0.8rem;">Reg: <strong>PHC-024</strong></p>
+                    </div>
+                    <span class="badge status-busy">On Trip</span>
+                </div>
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+                <p>Capacity: 4 Passengers</p>
+                <p>Mileage: 32,100 miles</p>
+                <button class="btn-primary" style="width: 100%; margin-top: 15px; background: #666;" disabled>Vehicle Busy</button>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

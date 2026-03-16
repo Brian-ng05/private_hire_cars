@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management System | Private HireCars</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    </head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>PRIVATE HIRECARS</h2>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="pages/booking.html">New Booking</a>
+            <a href="pages/drivers.html">Driver Directory</a>
+            <a href="pages/fleet.html">Fleet Management</a>
+            <a href="pages/customers.html">Customer Queries</a>
+            <a href="pages/offers.html">Special Offers</a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <h1>Staff Overview</h1>
+            <div class="staff-profile">
+                <span id="staffName">Operator: Loading...</span>
+                <button id="logoutBtn" class="btn-logout" title="Logout">Logout</button>
+            </div>
+        </header>
+
+        <section class="card">
+            <h3>Find or Create Customer Account</h3>
+            <p style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">Search by email to verify existing customers before booking.</p>
+            <div class="search-group">
+                <input type="email" placeholder="Enter customer email (e.g., customer@example.com)">
+                <button class="btn-primary">Search Account</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Current Fleet Status</h3>
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Vehicle Model</th>
+                        <th>Registration</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mercedes-Benz E-Class</td>
+                        <td>PHC-001</td>
+                        <td>4 Seats</td>
+                        <td><span class="badge status-available">Available</span></td>
+                    </tr>
+                    <tr>
+                        <td>Toyota Prius (Hybrid)</td>
+                        <td>PHC-024</td>
+                        <td>4 Seats</td>
+                        <td><span class="badge status-busy">On Trip</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ford Galaxy (MPV)</td>
+                        <td>PHC-009</td>
+                        <td>7 Seats</td>
+                        <td><span class="badge status-available">Available</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Check if user is authenticated
+        window.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = sessionStorage.getItem('phc_staff_logged_in');
+            const email = sessionStorage.getItem('phc_staff_email');
+
+            if (!isLoggedIn) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Display operator info
+            const staffNameEl = document.getElementById('staffName');
+            staffNameEl.textContent = `Operator: ${email || 'Staff Member'}`;
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('phc_staff_logged_in');
+            sessionStorage.removeItem('phc_staff_email');
+            window.location.href = 'login.html';
+        });
+    </script>
+
+</body>
+</html>

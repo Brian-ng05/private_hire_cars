@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Booking | Private HireCars Staff</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>PRIVATE HIRECARS</h2>
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="../pages/booking.html" class="active">New Booking</a>
+            <a href="../pages/drivers.html">Driver Directory</a>
+            <a href="../pages/fleet.html">Fleet Management</a>
+            <a href="../pages/customers.html">Customer Queries</a>
+            <a href="../pages/offers.html">Special Offers</a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <h1>Create New Booking</h1>
+            <div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
+        </header>
+
+        <section class="card">
+            <h3>Trip Details</h3>
+            <form class="booking-form">
+                <div class="form-group">
+                    <label>Pickup Location</label>
+                    <input type="text" placeholder="Enter pickup address" required>
+                </div>
+                <div class="form-group">
+                    <label>Destination</label>
+                    <input type="text" placeholder="Enter destination address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date of Journey</label>
+                    <div class="picker-container">
+                        <span class="picker-label">Select Date</span>
+                        <span class="picker-icon">📅</span>
+                        <input type="date" required onchange="this.previousElementSibling.previousElementSibling.innerText = this.value">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pickup Time</label>
+                    <div class="picker-container">
+                        <span class="picker-label">Select Time</span>
+                        <span class="picker-icon">🕒</span>
+                        <input type="time" required onchange="this.previousElementSibling.previousElementSibling.innerText = this.value">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Number of Passengers</label>
+                    <input type="number" min="1" max="32" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Required Vehicle Size</label>
+                    <select>
+                        <option value="standard">Standard (4 Seats)</option>
+                        <option value="mpv">MPV (6 Seats)</option>
+                        <option value="minibus">Minibus (7-16 Seats)</option>
+                        <option value="large">Large Coach (Up to 32 Seats)</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Service Type</label>
+                    <select>
+                        <option value="local">Local Journey</option>
+                        <option value="long">Long Distance</option>
+                        <option value="airport">Airport Transfer</option>
+                        <option value="hotel">Hotel Transfer</option>
+                        <option value="daily">Driver & Car for Daily Hire</option>
+                    </select>
+                </div>
+
+                <div class="full-width summary-box">
+                    <h4>Fare Estimation</h4>
+                    <p>Base Fare: £20.00</p>
+                    <p class="discount-text">Online Booking Discount (15%): -£3.00</p>
+                    <hr style="margin: 10px 0; border: 0; border-top: 1px solid #ddd;">
+                    <p><strong>Total Cost: £17.00</strong></p>
+                </div>
+
+                <div class="full-width" style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn-primary" style="background-color: #666; margin-right: 10px;">Cancel</button>
+                    <button type="submit" class="btn-primary">Confirm Booking</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>
