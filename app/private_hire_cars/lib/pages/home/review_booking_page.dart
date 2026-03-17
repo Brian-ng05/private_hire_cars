@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:private_hire_cars/classes/vehicles/vehicle.dart';
 import 'package:private_hire_cars/data/notifiers.dart';
 import 'package:private_hire_cars/pages/home/coupon_page.dart';
+import 'package:private_hire_cars/pages/home/payment_method_page.dart';
 import 'package:private_hire_cars/pages/widget_tree.dart';
+import 'package:private_hire_cars/services/auth/auth_services.dart';
 
 class ReviewOrderPage extends StatefulWidget {
   const ReviewOrderPage({
@@ -26,7 +28,8 @@ class ReviewOrderPage extends StatefulWidget {
 }
 
 class _ReviewOrderPageState extends State<ReviewOrderPage> {
-  double discountPercent = 15; // mặc định WELCOME15
+  double discountPercent = 15;
+  String selectedPaymentMethod = "Cash";
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +241,7 @@ class _ReviewOrderPageState extends State<ReviewOrderPage> {
                     });
                   }
                 },
+
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Row(
@@ -248,6 +252,47 @@ class _ReviewOrderPageState extends State<ReviewOrderPage> {
                       Expanded(
                         child: Text(
                           "${discountPercent.toInt()}% Off for Online Booking",
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+
+                      const Icon(Icons.arrow_forward_ios, size: 16),
+                    ],
+                  ),
+                ),
+              ),
+
+              const Text(
+                "Payment Methods",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+
+              GestureDetector(
+                onTap: () async {
+                  final String? method = await Navigator.push<String>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const PaymentMethodPage(),
+                    ),
+                  );
+
+                  if (method != null) {
+                    setState(() {
+                      selectedPaymentMethod = method;
+                    });
+                  }
+                },
+
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.wallet_outlined),
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          "$selectedPaymentMethod",
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
@@ -320,14 +365,34 @@ class _ReviewOrderPageState extends State<ReviewOrderPage> {
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                   ),
-                  onPressed: () {
-                    selectedPageNotifier.value = 1;
+                  onPressed: () async {
+                    try {
+                      await AuthService.sendBookingEmail(
+                        email: "user@gmail.com",
+                        departure: widget.departure,
+                        destination: widget.destination,
+                        carName: widget.vehicle.name,
+                        capacity: widget.vehicle.capacity,
+                        datetime: DateFormat(
+                          'HH:mm dd/MM/yyyy',
+                        ).format(widget.time!),
+                      );
 
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const WidgetTree()),
-                      (route) => false,
-                    );
+                      selectedPageNotifier.value = 1;
+
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const WidgetTree()),
+                        (route) => false,
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(e.toString()),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                   child: const Text("Book", style: TextStyle(fontSize: 16)),
                 ),
