@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Directory | Private HireCars Staff</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .toast {
+            display: none; position: fixed; bottom: 30px; right: 30px;
+            background: #000; color: #fff; padding: 15px 25px;
+            border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000; animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        /* Style cho Modal chi tiết tài xế */
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .detail-label { font-weight: bold; color: #666; }
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .history-table th { text-align: left; background: #f9f9f9; padding: 8px; border-bottom: 2px solid #ddd; }
+        .history-table td { padding: 8px; border-bottom: 1px solid #eee; }
+        .rating-stars { color: #f1c40f; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header"><h2>PRIVATE HIRECARS</h2></div>
+        <nav class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="booking.html">New Booking</a>
+            <a href="drivers.html" class="active">Driver Directory</a>
+            <a href="fleet.html">Fleet Management</a>
+            <a href="customers.html">Manage Customers</a>
+            <a href="offers.html">Coupon Management</a>
+            <a href="queries.html">User Queries</a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <div>
+                <h1>Driver Directory</h1>
+                <p style="color: #888;">Manage professional drivers and monitor performance.</p>
+            </div>
+            <div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
+        </header>
+
+        <section class="card">
+            <div class="search-group">
+                <input type="text" id="driverSearch" placeholder="Search by name, email, or license number...">
+                <button class="btn-primary" onclick="searchDrivers()">Search</button>
+            </div>
+        </section>
+
+        <div class="driver-grid" id="driverContainer"></div>
+    </main>
+
+    <div id="driverDetailModal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:#fff; margin:5% auto; padding:30px; border-radius:15px; width:650px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
+                <h2 id="detName">Driver Profile</h2>
+                <span style="cursor:pointer; font-size: 1.5rem;" onclick="closeDetails()">&times;</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4 style="color: #444; margin-bottom: 10px;">Driver Information</h4>
+                    <div class="detail-row"><span class="detail-label">License ID:</span> <span id="detLicense"></span></div>
+                    <div class="detail-row"><span class="detail-label">Email:</span> <span id="detEmail"></span></div>
+                    <div class="detail-row"><span class="detail-label">Performance:</span> <span id="detRating" class="rating-stars"></span></div>
+                </div>
+                <div>
+                    <h4 style="color: #444; margin-bottom: 10px;">Work Status</h4>
+                    <div class="detail-row"><span class="detail-label">Current Vehicle:</span> <span id="detVehicle"></span></div>
+                    <div class="detail-row"><span class="detail-label">Total Trips:</span> <span id="detTrips"></span></div>
+                    <div class="detail-row"><span class="detail-label">Status:</span> <span id="detStatus"></span></div>
+                </div>
+            </div>
+
+            <h4 style="color: #444; margin: 25px 0 10px;">Recent Trips History</h4>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Job ID</th>
+                        <th>Passenger</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="detHistory">
+                    </tbody>
+            </table>
+
+            <div style="margin-top: 30px; text-align: right;">
+                <button class="btn-primary" style="background: #666;" onclick="closeDetails()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="vehicleModal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:#fff; margin:10% auto; padding:30px; border-radius:15px; width:450px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+            <h3 id="vModalTitle">Assign Vehicle</h3>
+            <p id="vModalSubTitle" style="font-size:0.9rem; color:#666; margin-bottom:20px;"></p>
+            <select id="vehicleSelect" class="search-mini" style="width:100%; margin-bottom:20px;"></select>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn-primary" style="background:#666;" onclick="closeVehicleModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmVehicleAssignment()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="driverToast" class="toast"></div>
+
+    <script>
+        // Mock Data Realistic for Driver
+        const drivers = [
+            { 
+                name: "John Doe", email: "j.doe@phc.co.uk", license: "#LN-992031", status: "On Duty", vehicle: "PHC-001", avatar: "JD", 
+                rating: "★★★★★", totalTrips: 154,
+                history: [
+                    { date: "22/03/2026", id: "BK-8821", user: "Nguyen Van A", rate: "5/5" },
+                    { date: "21/03/2026", id: "BK-8790", user: "Alice Wonder", rate: "5/5" }
+                ]
+            },
+            { 
+                name: "James Taylor", email: "j.taylor@phc.co.uk", license: "#LN-330099", status: "Available", vehicle: "None", avatar: "JT",
+                rating: "★★★★☆", totalTrips: 89,
+                history: [{ date: "15/03/2026", id: "BK-7701", user: "Sarah Jenkins", rate: "4/5" }]
+            },
+            { 
+                name: "Emma White", email: "e.white@phc.co.uk", license: "#LN-228877", status: "Available", vehicle: "None", avatar: "EW",
+                rating: "★★★★★", totalTrips: 12, history: []
+            },
+            { 
+                name: "Tom Evans", email: "t.evans@phc.co.uk", license: "#LN-004433", status: "Available", vehicle: "None", avatar: "TE",
+                rating: "★★★☆☆", totalTrips: 45,
+                history: [{ date: "10/03/2026", id: "BK-6612", user: "Bob Marley", rate: "3/5" }]
+            },
+            { 
+                name: "Lucy Scott", email: "l.scott@phc.co.uk", license: "#LN-995511", status: "Available", vehicle: "None", avatar: "LS",
+                rating: "★★★★★", totalTrips: 210,
+                history: [{ date: "19/03/2026", id: "BK-8800", user: "Charlie Puth", rate: "5/5" }]
+            },
+            { 
+                name: "Alice Smith", email: "a.smith@phc.co.uk", license: "#LN-881245", status: "On Duty", vehicle: "PHC-009", avatar: "AS",
+                rating: "★★★★★", totalTrips: 312,
+                history: [{ date: "22/03/2026", id: "BK-8844", user: "Tran Thi B", rate: "5/5" }]
+            },
+            { 
+                name: "Mark Brown", email: "m.brown@phc.co.uk", license: "#LN-770066", status: "Available", vehicle: "None", avatar: "MB",
+                rating: "★★★★☆", totalTrips: 67, history: []
+            },
+            { 
+                name: "Sophie Green", email: "s.green@phc.co.uk", license: "#LN-669955", status: "On Duty", vehicle: "PHC-012", avatar: "SG",
+                rating: "★★★★★", totalTrips: 128,
+                history: [{ date: "20/03/2026", id: "BK-8810", user: "David Beckham", rate: "5/5" }]
+            },
+            { 
+                name: "David Wilson", email: "d.wilson@phc.co.uk", license: "#LN-558844", status: "On Duty", vehicle: "PHC-101", avatar: "DW",
+                rating: "★★★★☆", totalTrips: 94,
+                history: [{ date: "21/03/2026", id: "BK-8799", user: "Elon Musk", rate: "4/5" }]
+            },
+            { 
+                name: "Chris Miller", email: "c.miller@phc.co.uk", license: "#LN-443322", status: "Available", vehicle: "None", avatar: "CM",
+                rating: "★★★★★", totalTrips: 15, history: []
+            },
+            { 
+                name: "Helen Hunt", email: "h.hunt@phc.co.uk", license: "#LN-112233", status: "Available", vehicle: "None", avatar: "HH",
+                rating: "★★★★★", totalTrips: 42, history: []
+            },
+            { 
+                name: "Kevin Hart", email: "k.hart@phc.co.uk", license: "#LN-778899", status: "On Duty", vehicle: "PHC-024", avatar: "KH",
+                rating: "★★★☆☆", totalTrips: 56,
+                history: [{ date: "18/03/2026", id: "BK-8500", user: "Le Van C", rate: "3/5" }]
+            }
+        ];
+
+        const fleet = [ { model: "Tesla Model Y", reg: "PHC-115", status: "Available" } ];
+
+        function displayDrivers(data) {
+            const container = document.getElementById('driverContainer');
+            container.innerHTML = ""; 
+            data.forEach(d => {
+                const isAvail = d.status === "Available";
+                container.innerHTML += `
+                    <div class="driver-card" style="${!isAvail ? 'border-left-color: #888;' : ''}">
+                        <div class="driver-main-info">
+                            <div class="driver-avatar-circle">${d.avatar}</div>
+                            <div class="driver-text">
+                                <h4>${d.name}</h4>
+                                <p>${d.email} | ${d.license}</p>
+                                <span class="assigned-vehicle">Current Vehicle: <strong>${d.vehicle}</strong></span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="status-badge ${isAvail ? 'status-online' : 'status-offline'}">${d.status}</span>
+                            <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: flex-end;">
+                                <button class="btn-primary" style="background:#666; font-size:0.75rem;" onclick="viewDetails('${d.name}')">Details</button>
+                                <button class="btn-primary" style="font-size:0.75rem; ${!isAvail ? 'background:#ccc;' : ''}" 
+                                        onclick="openVehicleModal('${d.name}')" ${!isAvail ? "disabled" : ""}>
+                                    Assign
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function viewDetails(name) {
+            const d = drivers.find(x => x.name === name);
+            document.getElementById('detName').innerText = d.name;
+            document.getElementById('detLicense').innerText = d.license;
+            document.getElementById('detEmail').innerText = d.email;
+            document.getElementById('detRating').innerText = d.rating;
+            document.getElementById('detVehicle').innerText = d.vehicle;
+            document.getElementById('detTrips').innerText = d.totalTrips;
+            document.getElementById('detStatus').innerText = d.status;
+
+            const histBody = document.getElementById('detHistory');
+            histBody.innerHTML = d.history.length > 0 ? "" : "<tr><td colspan='4' style='text-align:center;'>No trip history.</td></tr>";
+            d.history.forEach(h => {
+                histBody.innerHTML += `<tr><td>${h.date}</td><td>${h.id}</td><td>${h.user}</td><td>${h.rate}</td></tr>`;
+            });
+
+            document.getElementById('driverDetailModal').style.display = "block";
+        }
+
+        function closeDetails() { document.getElementById('driverDetailModal').style.display = "none"; }
+
+        // Logic Assign Vehicle to Driver
+        let selectedDriverName = "";
+        function openVehicleModal(name) {
+            selectedDriverName = name;
+            document.getElementById('vModalSubTitle').innerText = `Assign car to: ${name}`;
+            const select = document.getElementById('vehicleSelect');
+            select.innerHTML = "";
+            fleet.filter(c => c.status === "Available").forEach(c => {
+                select.innerHTML += `<option value="${c.reg}">${c.model} (${c.reg})</option>`;
+            });
+            document.getElementById('vehicleModal').style.display = "block";
+        }
+
+        function closeVehicleModal() { document.getElementById('vehicleModal').style.display = "none"; }
+
+        function confirmVehicleAssignment() {
+            showToast(`✅ SUCCESS: Assigned vehicle to ${selectedDriverName}`);
+            closeVehicleModal();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('driverToast');
+            toast.innerText = msg; toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 3000);
+        }
+
+        function searchDrivers() {
+            const keyword = document.getElementById('driverSearch').value.toLowerCase();
+            const filtered = drivers.filter(d => d.name.toLowerCase().includes(keyword) || d.license.toLowerCase().includes(keyword));
+            displayDrivers(filtered);
+        }
+
+        displayDrivers(drivers);
+    </script>
+</body>
+</html>

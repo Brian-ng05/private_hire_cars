@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Booking | Private HireCars Staff</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Custom Styles for new features */
+        .toast {
+            display: none; position: fixed; bottom: 30px; right: 30px;
+            background: #000; color: #fff; padding: 15px 25px;
+            border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000; animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .error-subtext { color: #e53e3e; font-size: 0.8rem; display: none; margin-top: 10px; font-weight: 600; }
+        .section-title { grid-column: span 2; margin-top: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1rem; color: #444; }
+        .picker-container { position: relative; cursor: pointer; }
+        .picker-container input[type="date"], 
+        .picker-container input[type="time"] {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer; z-index: 2;
+        }
+        
+        /* Style for Read-only */
+        input[readonly] { background-color: #f5f5f5; color: #777; cursor: not-allowed; border: 1px dashed #ccc; }
+    </style>
+</head>
+<body onload="initPage()">
+
+    <aside class="sidebar">
+        <div class="sidebar-header"><h2>PRIVATE HIRECARS</h2></div>
+        <nav class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="booking.html" class="active">New Booking</a>
+            <a href="drivers.html">Driver Directory</a>
+            <a href="fleet.html">Fleet Management</a>
+            <a href="customers.html">Manage Customers</a>
+            <a href="offers.html">Coupon Management</a>
+            <a href="queries.html">User Queries</a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <header class="top-bar">
+            <h1>Create New Booking</h1>
+            <div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
+        </header>
+
+        <section class="card">
+            <form class="booking-form" id="mainBookingForm">
+                <h4 class="section-title">Customer Identification</h4>
+                <div class="form-group">
+                    <label>Customer Full Name</label>
+                    <input type="text" id="custName" placeholder="Search or enter name..." required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Info (Email/Phone)</label>
+                    <input type="text" id="custContact" placeholder="Contact details..." required>
+                </div>
+
+                <h4 class="section-title">Trip Details</h4>
+                <div class="form-group">
+                    <label>Pickup Location</label>
+                    <input type="text" id="pickup" placeholder="Enter pickup address" required>
+                </div>
+                <div class="form-group">
+                    <label>Destination</label>
+                    <input type="text" id="destination" placeholder="Enter destination address" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date of Journey</label>
+                    <div class="picker-container">
+                        <span class="picker-label" id="dateLabel">Select Date</span>
+                        <span class="picker-icon">📅</span>
+                        <input type="date" id="date" required onchange="updateLabel('dateLabel', this.value)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pickup Time</label>
+                    <div class="picker-container">
+                        <span class="picker-label" id="timeLabel">Select Time</span>
+                        <span class="picker-icon">🕒</span>
+                        <input type="time" id="time" required onchange="updateLabel('timeLabel', this.value)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Passengers</label>
+                    <input type="number" id="passengers" min="1" max="32" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Vehicle Class</label>
+                    <select id="vehicle">
+                        <option value="Standard (4 Seats)">Standard (4 Seats)</option>
+                        <option value="MPV (6 Seats)">MPV (6 Seats)</option>
+                        <option value="Minibus (7-16 Seats)">Minibus (7-16 Seats)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Service Type</label>
+                    <select id="serviceType">
+                        <option value="Local Journey">Local Journey</option>
+                        <option value="Airport Transfer">Airport Transfer</option>
+                        <option value="Long Distance">Long Distance</option>
+                        <option value="Daily Hire">Daily Hire</option>
+                    </select>
+                </div>
+
+                <div class="full-width" style="text-align: right; margin-top: 25px;">
+                    <div id="validateMsg" class="error-subtext">⚠️ Please fill in all details before reviewing.</div>
+                    <button type="reset" class="btn-primary" style="background-color: #666; margin-right: 10px;" onclick="setTimeout(initPage, 10)">Clear</button>
+                    <button type="button" class="btn-primary" onclick="showReviewModal()">Review & Confirm</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <div id="reviewModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);">
+        <div class="modal-content" style="background:#fff; margin:5% auto; padding:30px; border-radius:12px; width:550px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            <h2 style="margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;">Review Booking Details</h2>
+            <div id="bookingSummary" style="line-height: 1.6; margin-bottom: 20px; font-size: 0.95rem; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;"></div>
+            <div class="summary-box" style="background:#f9f9f9; padding:20px; border:1px dashed #bbb; border-radius:8px;">
+                <p>Base Fare: <span style="float:right;">£20.00</span></p>
+                <p style="color: #28a745; font-weight:bold;">Operator Discount: <span style="float:right;">-£3.00</span></p>
+                <hr style="margin: 10px 0; border:0; border-top:1px solid #ddd;">
+                <p style="font-size:1.1rem;"><strong>Total Payable: <span style="float:right;">£17.00</span></strong></p>
+            </div>
+            <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn-primary" style="background:#888;" onclick="closeModal()">Back to Edit</button>
+                <button class="btn-primary" onclick="finalizeBooking()">Confirm & Send SMS</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successToast" class="toast">✅ Trip confirmed for Customer! Redirecting...</div>
+
+    <script>
+        // Initialize page with default values and check for pre-selected customer from Manage Customers page
+        function initPage() {
+            setDefaultDateTime();
+            checkPreSelectedCustomer();
+        }
+
+        // Set default date and time to real-time values when the page loads
+        function setDefaultDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const currentDate = `${year}-${month}-${day}`;
+            const currentTime = `${hours}:${minutes}`;
+
+            document.getElementById('date').value = currentDate;
+            document.getElementById('time').value = currentTime;
+            updateLabel('dateLabel', currentDate);
+            updateLabel('timeLabel', currentTime);
+        }
+
+        // Identify if user came from Manage Customers page
+        function checkPreSelectedCustomer() {
+            const savedName = localStorage.getItem('selectedCustomerName');
+            const savedEmail = localStorage.getItem('selectedCustomerEmail');
+
+            if (savedName && savedEmail) {
+                const nameInp = document.getElementById('custName');
+                const contactInp = document.getElementById('custContact');
+                nameInp.value = savedName;
+                contactInp.value = savedEmail;
+                
+                // Lock input fields
+                nameInp.readOnly = true;
+                contactInp.readOnly = true;
+                
+                localStorage.removeItem('selectedCustomerName');
+                localStorage.removeItem('selectedCustomerEmail');
+            }
+        }
+
+        function updateLabel(id, val) { document.getElementById(id).innerText = val; }
+
+        function showReviewModal() {
+            const name = document.getElementById('custName').value;
+            const pickup = document.getElementById('pickup').value;
+            const dest = document.getElementById('destination').value;
+            const msg = document.getElementById('validateMsg');
+
+            if(!name || !pickup || !dest) {
+                msg.style.display = "block";
+                return;
+            }
+            msg.style.display = "none";
+
+            document.getElementById('bookingSummary').innerHTML = `
+                <div style="grid-column: span 2; background: #eee; padding: 10px; border-radius: 5px;">
+                    <strong>Customer:</strong> ${name} <br>
+                    <strong>Contact:</strong> ${document.getElementById('custContact').value}
+                </div>
+                <div><strong>From:</strong><br>${pickup}</div>
+                <div><strong>To:</strong><br>${dest}</div>
+                <div><strong>Service:</strong><br>${document.getElementById('serviceType').value}</div>
+                <div><strong>Date/Time:</strong><br>${document.getElementById('date').value} at ${document.getElementById('time').value}</div>
+            `;
+            document.getElementById('reviewModal').style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('reviewModal').style.display = "none"; }
+
+        function finalizeBooking() {
+    // Gather all booking details into an object (simulate invoice data)
+    const invoice = {
+        name: document.getElementById('custName').value,
+        pickup: document.getElementById('pickup').value,
+        dest: document.getElementById('destination').value,
+        date: document.getElementById('date').value + " " + document.getElementById('time').value
+    };
+
+    // Save to local Storage to display in Queries page (simulate sending invoice to customer)
+    localStorage.setItem('lastInvoice', JSON.stringify(invoice));
+
+    closeModal();
+    document.getElementById('successToast').style.display = "block";
+    
+    setTimeout(() => { 
+        window.location.href = "queries.html";
+    }, 2000);
+}
+    </script>
+</body>
+</html>
