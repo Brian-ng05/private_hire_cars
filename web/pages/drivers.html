@@ -14,7 +14,6 @@
         }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        /* Style cho Modal chi tiết tài xế */
         .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
         .detail-label { font-weight: bold; color: #666; }
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
@@ -44,7 +43,6 @@
                 <h1>Driver Directory</h1>
                 <p style="color: #888;">Manage professional drivers and monitor performance.</p>
             </div>
-            <div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
         </header>
 
         <section class="card">
@@ -114,7 +112,7 @@
     <div id="driverToast" class="toast"></div>
 
     <script>
-        // Mock Data Realistic for Driver
+
         const drivers = [
             { 
                 name: "John Doe", email: "j.doe@phc.co.uk", license: "#LN-992031", status: "On Duty", vehicle: "PHC-001", avatar: "JD", 
@@ -229,7 +227,6 @@
 
         function closeDetails() { document.getElementById('driverDetailModal').style.display = "none"; }
 
-        // Logic Assign Vehicle to Driver
         let selectedDriverName = "";
         function openVehicleModal(name) {
             selectedDriverName = name;
@@ -245,7 +242,7 @@
         function closeVehicleModal() { document.getElementById('vehicleModal').style.display = "none"; }
 
         function confirmVehicleAssignment() {
-            showToast(`✅ SUCCESS: Assigned vehicle to ${selectedDriverName}`);
+            showToast(`SUCCESS: Assigned vehicle to ${selectedDriverName}`);
             closeVehicleModal();
         }
 

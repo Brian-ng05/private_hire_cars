@@ -40,7 +40,7 @@
         <header class="top-bar">
             <div>
                 <h1>Customer Management</h1>
-                <p style="color: #888;">Track loyalty points and handle client accounts (User Story #47).</p>
+                <p style="color: #888;">Track loyalty points and handle client accounts.</p>
             </div>
             <button class="btn-primary" onclick="location.href='create-customer.html'">+ Add New Customer</button>
         </header>
@@ -105,7 +105,7 @@
     </div>
 
     <script>
-        // Danh sách 10 khách hàng bám sát User Story #47 (Loyalty)
+
         const customers = [
             { name: "Nguyen Van A", email: "anguyen@example.com", phone: "0901234567", dob: "15/05/1995", points: 450, history: [
                 { date: "20/03/2026", route: "District 1 -> Airport", fare: "£25.00", earned: "+25" },
@@ -177,7 +177,7 @@
 
         function goToChat(name) {
             localStorage.setItem('activeChatUser', name);
-            window.location.href = 'queries.html'; // Đảm bảo trang queries.html của mày có nhận biến này
+            window.location.href = 'queries.html';
         }
 
         window.onclick = function(event) {

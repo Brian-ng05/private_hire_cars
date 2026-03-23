@@ -12,12 +12,8 @@
         .coupon-badge { position: absolute; top: 10px; right: 10px; background: #000; color: #fff; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .discount-val { font-size: 2rem; font-weight: 800; margin: 10px 0; color: #28a745; }
         .coupon-code { background: #eee; padding: 5px 10px; border-radius: 4px; font-family: monospace; font-weight: bold; }
-        
-        /* Toast Notification */
         .toast { display: none; position: fixed; bottom: 30px; right: 30px; background: #000; color: #fff; padding: 15px 25px; border-radius: 8px; z-index: 10000; animation: slideUp 0.5s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* Deactivated State */
         .deactivated { opacity: 0.4; pointer-events: none; filter: grayscale(1); border-style: dotted; }
     </style>
 </head>
@@ -94,8 +90,6 @@
     <script>
         let isEditing = false;
         let editTargetCode = "";
-
-        // Mock data khởi tạo
         const initialCoupons = [
             { name: "Welcome Back Offer", value: "15%", code: "LOYAL15", category: "Loyalty", desc: "Applied for customers with more than 10 bookings." },
             { name: "Airport Special", value: "£5.00", code: "FLYHIGH5", category: "Event", desc: "Summer discount for all airport routes." }
@@ -148,7 +142,7 @@
         function deactivateCoupon(code) {
             if(confirm(`Deactivate coupon [${code}]? This action cannot be undone.`)) {
                 document.getElementById(`cp-${code}`).classList.add('deactivated');
-                showToast("⚠️ Coupon " + code + " has been deactivated.");
+                showToast("Coupon " + code + " has been deactivated.");
             }
         }
 
@@ -166,10 +160,10 @@
 
             if (isEditing) {
                 document.getElementById(`cp-${editTargetCode}`).outerHTML = renderCouponHTML(data);
-                showToast("✅ Coupon updated successfully!");
+                showToast("Coupon updated successfully!");
             } else {
                 document.getElementById('couponContainer').insertAdjacentHTML('afterbegin', renderCouponHTML(data));
-                showToast("✅ New coupon published!");
+                showToast("New coupon published!");
             }
             closeCouponModal();
         };
