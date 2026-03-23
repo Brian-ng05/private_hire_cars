@@ -19,6 +19,9 @@
             <a href="pages/booking.html">New Booking</a>
             <a href="pages/drivers.html">Driver Directory</a>
             <a href="pages/fleet.html">Fleet Management</a>
+            <a href="pages/customers.html">Manage Customers</a>
+            <a href="pages/offers.html">Coupon Management</a>
+            <a href="pages/queries.html">User Queries</a>
             <a href="pages/customers.html">Customer Queries</a>
             <a href="pages/offers.html">Special Offers</a>
         </nav>
@@ -26,6 +29,29 @@
 
     <main class="main-container">
         <header class="top-bar">
+            <div>
+                <h1>Staff Management System</h1>
+                <p style="color: #888;">Private HireCars Central Control</p>
+            </div>
+            <div class="staff-profile">Operator: Nguyen A | ID: #GCD240123</div>
+        </header>
+
+        <section class="card">
+            <h3>Find Customer Account</h3>
+            <p style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">Verify client details before proceeding with telephone or online bookings.</p>
+            <div class="search-group">
+                <input type="text" id="customerSearchInput" placeholder="Enter customer email or name..." required>
+                <button class="btn-primary" onclick="searchCustomers()">Search Account</button>
+            </div>
+            
+            <div id="customerResultContainer" style="margin-top: 20px;"></div>
+        </section>
+
+        <section class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>Current Fleet Status</h3>
+                <a href="pages/fleet.html" style="color: #000; font-size: 0.8rem; font-weight: bold;">View Full Fleet</a>
+            </div>
             <h1>Staff Overview</h1>
             <div class="staff-profile">
                 <span id="staffName">Operator: Loading...</span>
@@ -54,6 +80,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr><td>Mercedes-Benz E-Class</td><td>PHC-001</td><td>4 Seats</td><td><span class="badge status-available">Available</span></td></tr>
+                    <tr><td>Toyota Prius (Hybrid)</td><td>PHC-024</td><td>4 Seats</td><td><span class="badge status-busy">On Trip</span></td></tr>
+                    <tr><td>Ford Galaxy (MPV)</td><td>PHC-009</td><td>7 Seats</td><td><span class="badge status-available">Available</span></td></tr>
+                    <tr><td>BMW 5 Series</td><td>PHC-012</td><td>4 Seats</td><td><span class="badge status-available">Available</span></td></tr>
+                    <tr><td>VW Sharan</td><td>PHC-045</td><td>6 Seats</td><td><span class="badge status-busy">On Trip</span></td></tr>
+                    <tr><td>Audi A6</td><td>PHC-088</td><td>4 Seats</td><td><span class="badge status-available">Available</span></td></tr>
+                    <tr><td>Tesla Model 3</td><td>PHC-101</td><td>4 Seats</td><td><span class="badge status-available">Available</span></td></tr>
+                    <tr><td>Mercedes V-Class</td><td>PHC-150</td><td>8 Seats</td><td><span class="badge status-busy" style="background:#eee; color:#666;">Maintenance</span></td></tr>
                     <tr>
                         <td>Mercedes-Benz E-Class</td>
                         <td>PHC-001</td>
@@ -78,6 +112,56 @@
     </main>
 
     <script>
+        const customers = [
+            { name: "Nguyen Van A", email: "anguyen@example.com", phone: "0901234567", type: "Regular" },
+            { name: "Tran Thi B", email: "btran@example.com", phone: "0987654321", type: "Corporate" }
+        ];
+
+        function searchCustomers() {
+            const keyword = document.getElementById('customerSearchInput').value.toLowerCase();
+            const container = document.getElementById('customerResultContainer');
+            container.innerHTML = "";
+
+            if (keyword.trim() === "") return;
+
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(keyword) || c.email.toLowerCase().includes(keyword)
+            );
+
+            if (filtered.length > 0) {
+                filtered.forEach(c => {
+                    container.innerHTML += `
+                        <div class="user-result-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; background: #fafafa;">
+                            <div>
+                                <h4 style="margin:0;">${c.name}</h4>
+                                <p style="margin:5px 0 0; font-size:0.85rem; color:#666;">${c.email} | ${c.phone}</p>
+                            </div>
+                            <button class="btn-primary" style="padding: 8px 15px; font-size: 0.8rem;" onclick="goToBooking('${c.name}', '${c.email}')">Select & Book</button>
+                        </div>
+                    `;
+                });
+            } else {
+                // Sửa nút Create New User để nhảy sang trang tạo
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; border: 1px dashed #ccc; border-radius: 8px;">
+                        <p style="color: #e53e3e; font-weight: bold; margin-bottom: 10px;">No customer found matching "${keyword}"</p>
+                        <button class="btn-primary" style="background-color: #444;" onclick="location.href='pages/create-customer.html'">+ Create New Customer Account</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Hàm hỗ trợ Select & Book ngay từ Index
+        function goToBooking(name, email) {
+            localStorage.setItem('selectedCustomerName', name);
+            localStorage.setItem('selectedCustomerEmail', email);
+            window.location.href = 'pages/booking.html';
+        }
+
+        document.getElementById('customerSearchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchCustomers();
+        });
+    </script>
         // Check if user is authenticated
         window.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = sessionStorage.getItem('phc_staff_logged_in');

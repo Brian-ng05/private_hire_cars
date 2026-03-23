@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fleet Management | Private HireCars</title>
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Toast Notification Styling */
+        .toast {
+            display: none; position: fixed; bottom: 30px; right: 30px;
+            background: #000; color: #fff; padding: 15px 25px;
+            border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000; animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
     
 </head>
 <body>
@@ -18,6 +28,9 @@
             <a href="booking.html">New Booking</a>
             <a href="drivers.html">Driver Directory</a>
             <a href="fleet.html" class="active">Fleet Management</a>
+            <a href="customers.html">Manage Customers</a>
+            <a href="offers.html">Coupon Management</a>
+            <a href="queries.html">User Queries</a>
             <a href="customers.html">Customer Queries</a>
             <a href="offers.html">Special Offers</a>
         </nav>
@@ -34,6 +47,8 @@
 
         <section class="card">
             <div class="filter-bar">
+                <input type="text" id="fleetSearch" class="search-mini" placeholder="Search by Reg Number or Model...">
+                <select id="capacityFilter" class="search-mini" style="width: 150px;">
                 <input type="text" class="search-mini" placeholder="Search by Reg Number or Model...">
                 <select class="search-mini" style="width: 150px;">
                     <option value="all">All Capacities</option>
@@ -41,6 +56,150 @@
                     <option value="6">6 Seats</option>
                     <option value="7">7+ Seats</option>
                 </select>
+                <button class="btn-primary" onclick="filterFleet()">Filter</button>
+            </div>
+        </section>
+
+        <div class="fleet-grid" id="fleetContainer"></div> 
+    </main>
+
+    <div id="assignModal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:#fff; margin:10% auto; padding:30px; border-radius:15px; width:400px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
+            <h3 style="margin-bottom:15px;">Assign Driver to Vehicle</h3>
+            <p id="modalSubTitle" style="font-size:0.9rem; color:#666; margin-bottom:20px;"></p>
+            
+            <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:10px;">Select Available Driver:</label>
+            <select id="driverSelect" class="search-mini" style="width:100%; margin-bottom:20px;"></select>
+            
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn-primary" style="background:#666;" onclick="closeAssignModal()">Cancel</button>
+                <button class="btn-primary" id="confirmBtn" onclick="confirmAssignment()">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fleetToast" class="toast"></div>
+
+    <script>
+        // Real-time Fleet Data
+        let vehicles = [
+            { model: "Mercedes E-Class", reg: "PHC-001", status: "Available", cap: 4, mileage: "12k" },
+            { model: "Toyota Prius", reg: "PHC-024", status: "On Trip", cap: 4, mileage: "32k" },
+            { model: "Ford Galaxy", reg: "PHC-009", status: "Available", cap: 7, mileage: "45k" },
+            { model: "BMW 5 Series", reg: "PHC-012", status: "Available", cap: 4, mileage: "8k" },
+            { model: "VW Sharan", reg: "PHC-045", status: "On Trip", cap: 6, mileage: "28k" },
+            { model: "Audi A6", reg: "PHC-088", status: "Available", cap: 4, mileage: "15k" },
+            { model: "Tesla Model 3", reg: "PHC-101", status: "Available", cap: 4, mileage: "5k" },
+            { model: "Mercedes V-Class", reg: "PHC-150", status: "Maintenance", cap: 8, mileage: "60k" },
+            { model: "Skoda Superb", reg: "PHC-032", status: "Available", cap: 4, mileage: "21k" },
+            { model: "BMW 7 Series", reg: "PHC-112", status: "On Trip", cap: 4, mileage: "10k" },
+            { model: "Mercedes Sprinter", reg: "PHC-077", status: "Available", cap: 16, mileage: "55k" },
+            { model: "Hyundai Ioniq", reg: "PHC-056", status: "Available", cap: 4, mileage: "18k" },
+            { model: "Range Rover", reg: "PHC-099", status: "On Trip", cap: 4, mileage: "15k" },
+            { model: "Seat Alhambra", reg: "PHC-021", status: "Available", cap: 7, mileage: "38k" },
+            { model: "Tesla Model Y", reg: "PHC-115", status: "Available", cap: 4, mileage: "7k" },
+            { model: "Ford Transit", reg: "PHC-064", status: "Available", cap: 12, mileage: "42k" },
+            { model: "Jaguar XF", reg: "PHC-018", status: "On Trip", cap: 4, mileage: "25k" },
+            { model: "Honda Civic", reg: "PHC-042", status: "Available", cap: 4, mileage: "29k" }
+        ];
+
+        // Mock Driver Data: Available and Unassigned drivers only
+        const drivers = [
+            { name: "James Taylor", status: "Available", assignedVehicle: "None" },
+            { name: "Emma White", status: "Available", assignedVehicle: "None" },
+            { name: "Tom Evans", status: "Available", assignedVehicle: "None" },
+            { name: "Lucy Scott", status: "Available", assignedVehicle: "None" },
+            { name: "Mark Brown", status: "Available", assignedVehicle: "None" }
+        ];
+
+        let selectedVehicleReg = "";
+
+        function displayFleet(data) {
+            const container = document.getElementById('fleetContainer');
+            container.innerHTML = "";
+            data.forEach(v => {
+                const isBusy = v.status !== "Available";
+                const isMaintenance = v.status === "Maintenance";
+                const statusClass = isMaintenance ? "status-maintenance" : (isBusy ? "status-busy" : "status-available");
+                
+                container.innerHTML += `
+                    <div class="card vehicle-card">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div><h4>${v.model}</h4><p>Reg: <strong>${v.reg}</strong></p></div>
+                            <span class="badge ${statusClass}">${v.status}</span>
+                        </div>
+                        <p>Capacity: ${v.cap} Seats | Mileage: ${v.mileage}</p>
+                        <button class="btn-primary" style="width: 100%; margin-top: 10px; ${isBusy ? 'background:#ccc;' : ''}" 
+                                onclick="openAssignModal('${v.reg}', '${v.model}')" ${isBusy ? 'disabled' : ''}>
+                            ${isMaintenance ? 'Service' : (isBusy ? 'Busy' : 'Assign')}
+                        </button>
+                    </div>`;
+            });
+        }
+
+        function openAssignModal(reg, model) {
+            selectedVehicleReg = reg;
+            document.getElementById('modalSubTitle').innerText = `Vehicle: ${model} (${reg})`;
+            const select = document.getElementById('driverSelect');
+            const confirmBtn = document.getElementById('confirmBtn');
+            select.innerHTML = "";
+            
+            const eligibleDrivers = drivers.filter(d => d.status === "Available" && d.assignedVehicle === "None");
+            
+            if(eligibleDrivers.length === 0) {
+                select.innerHTML = "<option value=''>No Available Drivers</option>";
+                confirmBtn.disabled = true;
+                confirmBtn.style.background = "#ccc";
+            } else {
+                confirmBtn.disabled = false;
+                confirmBtn.style.background = "#000";
+                eligibleDrivers.forEach(d => {
+                    select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+                });
+            }
+            document.getElementById('assignModal').style.display = "block";
+        }
+
+        function closeAssignModal() { document.getElementById('assignModal').style.display = "none"; }
+
+        function confirmAssignment() {
+            const driverName = document.getElementById('driverSelect').value;
+            if(!driverName) return;
+
+            const vehicle = vehicles.find(v => v.reg === selectedVehicleReg);
+            const driver = drivers.find(d => d.name === driverName);
+
+            if(vehicle && driver) {
+                vehicle.status = "On Trip";
+                driver.status = "On Duty";
+                driver.assignedVehicle = selectedVehicleReg; // Update driver's assigned vehicle
+                
+                showToast(`✅ SUCCESS: ${driverName} assigned to ${selectedVehicleReg}`);
+                closeAssignModal();
+                displayFleet(vehicles);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('fleetToast');
+            toast.innerText = msg;
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 3000);
+        }
+
+        function filterFleet() {
+            const keyword = document.getElementById('fleetSearch').value.toLowerCase();
+            const capValue = document.getElementById('capacityFilter').value;
+            const filtered = vehicles.filter(v => {
+                const matchesKeyword = v.model.toLowerCase().includes(keyword) || v.reg.toLowerCase().includes(keyword);
+                let matchesCap = capValue === "all" ? true : (capValue === "7" ? v.cap >= 7 : v.cap === parseInt(capValue));
+                return matchesKeyword && matchesCap;
+            });
+            displayFleet(filtered);
+        }
+
+        displayFleet(vehicles);
+    </script>
                 <button class="btn-primary">Filter</button>
             </div>
         </section>

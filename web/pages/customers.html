@@ -1,72 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customer Queries</title>
-<link rel="stylesheet" href="../css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Customers | Private HireCars Staff</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Detail Modal Styling */
+        .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .detail-label { font-weight: bold; color: #555; }
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .history-table th { text-align: left; background: #f4f4f4; padding: 10px; border-bottom: 2px solid #ddd; }
+        .history-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        
+        /* Loyalty Point Badges (#47) */
+        .point-badge { background: #fff7ed; color: #c2410c; padding: 4px 10px; border-radius: 6px; font-weight: bold; border: 1px solid #fdba74; font-size: 0.85rem; }
+        .loyal-vip { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+
+        /* Action Buttons Layout */
+        .btn-group { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-mini { padding: 6px 12px; font-size: 0.75rem; border-radius: 4px; }
+    </style>
 </head>
-
 <body>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h2>PRIVATE HIRECARS</h2></div>
+        <nav class="nav-links">
+            <a href="../index.html">Dashboard</a>
+            <a href="booking.html">New Booking</a>
+            <a href="drivers.html">Driver Directory</a>
+            <a href="fleet.html">Fleet Management</a>
+            <a href="customers.html" class="active">Manage Customers</a>
+            <a href="offers.html">Coupon Management</a>
+            <a href="queries.html">User Queries</a>
+        </nav>
+    </aside>
 
-<aside class="sidebar">
-<div class="sidebar-header">
-<h2>PRIVATE HIRECARS</h2>
-</div>
+    <main class="main-container">
+        <header class="top-bar">
+            <div>
+                <h1>Customer Management</h1>
+                <p style="color: #888;">Track loyalty points and handle client accounts (User Story #47).</p>
+            </div>
+            <button class="btn-primary" onclick="location.href='create-customer.html'">+ Add New Customer</button>
+        </header>
 
-<nav class="nav-links">
-<a href="../index.html">Dashboard</a>
-<a href="booking.html">New Booking</a>
-<a href="drivers.html">Driver Directory</a>
-<a href="fleet.html">Fleet Management</a>
-<a href="customers.html" class="active">Customer Queries</a>
-<a href="offers.html">Special Offers</a>
-</nav>
-</aside>
+        <section class="card">
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Loyalty Points</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    </tbody>
+            </table>
+        </section>
+    </main>
 
-<main class="main-container">
+    <div id="detailsModal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px);">
+        <div class="modal-content" style="background:#fff; margin:5% auto; padding:35px; border-radius:15px; width:700px; box-shadow:0 15px 40px rgba(0,0,0,0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px;">
+                <h2 id="detName" style="margin:0;">Customer Profile</h2>
+                <span style="cursor:pointer; font-size: 1.8rem; font-weight: bold;" onclick="closeDetails()">&times;</span>
+            </div>
 
-<header class="top-bar">
-<h1>Customer Queries</h1>
-<div class="staff-profile">Operator: Nguyen A | ID: GCD240123</div>
-</header>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h4 style="color: #000; margin-bottom: 12px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Contact Information</h4>
+                    <div class="detail-row"><span class="detail-label">Email:</span> <span id="detEmail"></span></div>
+                    <div class="detail-row"><span class="detail-label">Phone:</span> <span id="detPhone"></span></div>
+                    <div class="detail-row"><span class="detail-label">D.O.B:</span> <span id="detDob"></span></div>
+                </div>
+                <div>
+                    <h4 style="color: #000; margin-bottom: 12px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Loyalty Status (#47)</h4>
+                    <div class="detail-row"><span class="detail-label">Current Points:</span> <span id="detPoints" style="font-weight: bold; color: #c2410c; font-size: 1.1rem;"></span></div>
+                    <div class="detail-row"><span class="detail-label">Tier Status:</span> <span id="detStatus" style="font-weight: bold;"></span></div>
+                    <div class="detail-row"><span class="detail-label">Member Since:</span> <span>March 2025</span></div>
+                </div>
+            </div>
 
-<section class="card">
+            <h4 style="color: #000; margin: 35px 0 10px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Recent Activity & Points History</h4>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Trip Route</th>
+                        <th>Fare Paid</th>
+                        <th>Points Earned</th>
+                    </tr>
+                </thead>
+                <tbody id="detHistory">
+                    </tbody>
+            </table>
 
-<h3>Customer Messages</h3>
+            <div style="margin-top: 35px; text-align: right; border-top: 1px solid #eee; padding-top: 20px;">
+                <button class="btn-primary" style="background:#666;" onclick="closeDetails()">Close Profile</button>
+            </div>
+        </div>
+    </div>
 
-<table class="status-table">
-<thead>
-<tr>
-<th>Customer</th>
-<th>Email</th>
-<th>Message</th>
-<th>Status</th>
-</tr>
-</thead>
+    <script>
+        // Danh sách 10 khách hàng bám sát User Story #47 (Loyalty)
+        const customers = [
+            { name: "Nguyen Van A", email: "anguyen@example.com", phone: "0901234567", dob: "15/05/1995", points: 450, history: [
+                { date: "20/03/2026", route: "District 1 -> Airport", fare: "£25.00", earned: "+25" },
+                { date: "12/03/2026", route: "Hotel Nikko -> Landmark 81", fare: "£12.00", earned: "+12" }
+            ]},
+            { name: "Sarah Jenkins", email: "sarah.j@email.com", phone: "07700900123", dob: "22/11/1988", points: 1250, history: [
+                { date: "18/03/2026", route: "Heathrow -> Central London", fare: "£45.00", earned: "+45" }
+            ]},
+            { name: "Tran Thi B", email: "btran@example.com", phone: "0987654321", dob: "02/02/1990", points: 85, history: [] },
+            { name: "Robert Wilson", email: "robert.w@gmail.com", phone: "07700900555", dob: "10/10/1985", points: 2350, history: [
+                { date: "22/03/2026", route: "Manchester -> Liverpool", fare: "£85.00", earned: "+85" }
+            ]},
+            { name: "Le Van C", email: "cle@example.com", phone: "0911223344", dob: "12/12/2000", points: 10, history: [] },
+            { name: "Emma Watson", email: "emma.w@phc.co.uk", phone: "07700900111", dob: "15/04/1990", points: 610, history: [] },
+            { name: "David Beckham", email: "beckham.d@football.com", phone: "07700900777", dob: "02/05/1975", points: 4200, history: [] },
+            { name: "Phan Van Duc", email: "ducphan@vff.vn", phone: "0933445566", dob: "20/08/1996", points: 120, history: [] },
+            { name: "Alice Cooper", email: "alice.c@rock.com", phone: "07700900222", dob: "04/02/1948", points: 0, history: [] },
+            { name: "Chris Hemsworth", email: "thor@asgard.com", phone: "07700900999", dob: "11/08/1983", points: 950, history: [] }
+        ];
 
-<tbody>
+        function renderTable() {
+            const tbody = document.getElementById('customerTableBody');
+            tbody.innerHTML = "";
+            customers.forEach(c => {
+                const isLoyal = c.points >= 1000;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                        <td><span class="point-badge ${isLoyal ? 'loyal-vip' : ''}">${c.points} pts ${isLoyal ? '★' : ''}</span></td>
+                        <td style="text-align: right;">
+                            <div class="btn-group">
+                                <button class="btn-primary btn-mini" style="background:#666;" onclick="viewDetails('${c.name}')">Details</button>
+                                <button class="btn-primary btn-mini" style="background:#4a5568;" onclick="goToChat('${c.name}')">Chat</button>
+                                <button class="btn-primary btn-mini" onclick="bookForCustomer('${c.name}', '${c.email}')">Booking</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
 
-<tr>
-<td>Emily Watson</td>
-<td>emily@email.com</td>
-<td>Question about airport pickup</td>
-<td><span class="badge status-available">Open</span></td>
-</tr>
+        function viewDetails(name) {
+            const c = customers.find(x => x.name === name);
+            document.getElementById('detName').innerText = name;
+            document.getElementById('detEmail').innerText = c.email;
+            document.getElementById('detPhone').innerText = c.phone;
+            document.getElementById('detDob').innerText = c.dob;
+            document.getElementById('detPoints').innerText = c.points + " Points";
+            document.getElementById('detStatus').innerText = c.points >= 1000 ? "LOYAL VIP CLIENT" : "STANDARD CLIENT";
 
-<tr>
-<td>Daniel Kim</td>
-<td>daniel@email.com</td>
-<td>Booking cancellation request</td>
-<td><span class="badge status-busy">Pending</span></td>
-</tr>
+            const histBody = document.getElementById('detHistory');
+            histBody.innerHTML = c.history.length > 0 ? "" : "<tr><td colspan='4' style='text-align:center;'>No booking history found for this account.</td></tr>";
+            c.history.forEach(h => {
+                histBody.innerHTML += `<tr><td>${h.date}</td><td>${h.route}</td><td>${h.fare}</td><td style="color:#15803d; font-weight:bold;">${h.earned}</td></tr>`;
+            });
 
-</tbody>
+            document.getElementById('detailsModal').style.display = "block";
+        }
 
-</table>
+        function closeDetails() { document.getElementById('detailsModal').style.display = "none"; }
 
-</section>
+        function bookForCustomer(name, email) {
+            localStorage.setItem('selectedCustomerName', name);
+            localStorage.setItem('selectedCustomerEmail', email);
+            window.location.href = 'booking.html';
+        }
 
-</main>
+        function goToChat(name) {
+            localStorage.setItem('activeChatUser', name);
+            window.location.href = 'queries.html'; // Đảm bảo trang queries.html của mày có nhận biến này
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('detailsModal')) closeDetails();
+        }
+
+        renderTable();
+    </script>
 </body>
 </html>
