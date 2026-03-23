@@ -1,0 +1,155 @@
+[
+  {
+    "vehicle_id": 1,
+    "registration_no": "AB12 CDE",
+    "name": "VinFast - VF3",
+    "image_url": "assets/images/4_seater_car_image1.png",
+    "max_speed": 100,
+    "capacity": 4,
+    "pricing": { "base_fare": 3, "price_per_km": 2.0, "price_per_day": 70 }
+  },
+  {
+    "vehicle_id": 2,
+    "registration_no": "BC14 FGH",
+    "name": "VinFast - VF3",
+    "image_url": "assets/images/4_seater_car_image2.png",
+    "max_speed": 100,
+    "capacity": 4,
+    "pricing": { "base_fare": 3, "price_per_km": 2.2, "price_per_day": 75 }
+  },
+  {
+    "vehicle_id": 3,
+    "registration_no": "CD16 JKL",
+    "name": "Mercedes-Maybach - Maybach GLS 600",
+    "image_url": "assets/images/4_seater_car_image3.png",
+    "max_speed": 250,
+    "capacity": 4,
+    "pricing": { "base_fare": 8, "price_per_km": 6.5, "price_per_day": 350 }
+  },
+  {
+    "vehicle_id": 4,
+    "registration_no": "DE18 MNO",
+    "name": "Ford - Fiesta ST",
+    "image_url": "assets/images/4_seater_car_image4.png",
+    "max_speed": 230,
+    "capacity": 4,
+    "pricing": { "base_fare": 3.5, "price_per_km": 2.5, "price_per_day": 85 }
+  },
+  {
+    "vehicle_id": 5,
+    "registration_no": "EF20 PQR",
+    "name": "Ford - Edge",
+    "image_url": "assets/images/4_seater_car_image5.png",
+    "max_speed": 210,
+    "capacity": 4,
+    "pricing": { "base_fare": 4, "price_per_km": 2.8, "price_per_day": 95 }
+  },
+  {
+    "vehicle_id": 6,
+    "registration_no": "FG21 STU",
+    "name": "Renault - Triber",
+    "image_url": "assets/images/7_seater_car_image1.png",
+    "max_speed": 160,
+    "capacity": 7,
+    "pricing": { "base_fare": 4, "price_per_km": 2.8, "price_per_day": 110 }
+  },
+  {
+    "vehicle_id": 7,
+    "registration_no": "GH22 VWX",
+    "name": "Hyundai - Santa Fe",
+    "image_url": "assets/images/7_seater_car_image2.png",
+    "max_speed": 210,
+    "capacity": 7,
+    "pricing": { "base_fare": 4.5, "price_per_km": 3.0, "price_per_day": 120 }
+  },
+  {
+    "vehicle_id": 8,
+    "registration_no": "HJ23 YZA",
+    "name": "Mahindra - XUV700",
+    "image_url": "assets/images/7_seater_car_image3.png",
+    "max_speed": 200,
+    "capacity": 7,
+    "pricing": { "base_fare": 4.5, "price_per_km": 2.9, "price_per_day": 115 }
+  },
+  {
+    "vehicle_id": 9,
+    "registration_no": "KL13 BCD",
+    "name": "Ford - Everest",
+    "image_url": "assets/images/7_seater_car_image4.png",
+    "max_speed": 200,
+    "capacity": 7,
+    "pricing": { "base_fare": 5, "price_per_km": 3.2, "price_per_day": 130 }
+  },
+  {
+    "vehicle_id": 10,
+    "registration_no": "LM15 EFG",
+    "name": "Ford - Ford Transit (Limousine)",
+    "image_url": "assets/images/16_seater_car_image1.png",
+    "max_speed": 160,
+    "capacity": 16,
+    "pricing": { "base_fare": 6, "price_per_km": 4.2, "price_per_day": 180 }
+  },
+  {
+    "vehicle_id": 11,
+    "registration_no": "MN17 HIJ",
+    "name": "Ford - Ford Transit",
+    "image_url": "assets/images/16_seater_car_image2.png",
+    "max_speed": 150,
+    "capacity": 16,
+    "pricing": { "base_fare": 6, "price_per_km": 4.0, "price_per_day": 170 }
+  },
+  {
+    "vehicle_id": 12,
+    "registration_no": "NP19 KLM",
+    "name": "Mercedes-Benz - Sprinter",
+    "image_url": "assets/images/16_seater_car_image3.png",
+    "max_speed": 170,
+    "capacity": 16,
+    "pricing": { "base_fare": 6.5, "price_per_km": 4.5, "price_per_day": 200 }
+  },
+  {
+    "vehicle_id": 13,
+    "registration_no": "LD23 XKM",
+    "name": "Ashok Leyland - Viking",
+    "image_url": "assets/images/32_seater_car_image1.png",
+    "max_speed": 100,
+    "capacity": 32,
+    "pricing": { "base_fare": 10, "price_per_km": 6.5, "price_per_day": 400 }
+  },
+  {
+    "vehicle_id": 14,
+    "registration_no": "BK71 RZT",
+    "name": "Iveco Daily Coach",
+    "image_url": "assets/images/32_seater_car_image2.png",
+    "max_speed": 110,
+    "capacity": 32,
+    "pricing": { "base_fare": 10, "price_per_km": 6.8, "price_per_day": 420 }
+  },
+  {
+    "vehicle_id": 15,
+    "registration_no": "MV19 HPL",
+    "name": "Mercedes-Benz - Tourismo",
+    "image_url": "assets/images/32_seater_car_image3.png",
+    "max_speed": 120,
+    "capacity": 32,
+    "pricing": { "base_fare": 12, "price_per_km": 7.2, "price_per_day": 450 }
+  },
+  {
+    "vehicle_id": 16,
+    "registration_no": "YX22 FDN",
+    "name": "Ferrari - Super GT",
+    "image_url": "assets/images/ferrari.png",
+    "max_speed": 340,
+    "capacity": 2,
+    "pricing": { "base_fare": 12, "price_per_km": 8.0, "price_per_day": 600 }
+  },
+  {
+    "vehicle_id": 17,
+    "registration_no": "CN68 WJR",
+    "name": "Lamborghini - Huracán STO",
+    "image_url": "assets/images/lamborghini.png",
+    "max_speed": 310,
+    "capacity": 2,
+    "pricing": { "base_fare": 12, "price_per_km": 7.5, "price_per_day": 580 }
+  }
+]

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../data/home_data.dart';
+import 'package:private_hire_cars/classes/homePage/service_card.dart';
+import 'package:private_hire_cars/pages/home/location_page.dart';
+import 'package:private_hire_cars/pages/home/meet_and_greet.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
-
   final String title;
 
   @override

@@ -1,0 +1,121 @@
+[
+  {
+    "booking_id": 1,
+    "pickup_location": "658 Ngo Quyen",
+    "destination": "San bay Da Nang",
+    "service_type": "Airport Transfer",
+    "pickup_datetime": "2024-07-01T10:00:00",
+    "passenger_count": 2,
+    "booking_status": "Completed",
+    "distance_km": 15.5,
+    "final_price": 35.0,
+
+    "vehicle": {
+      "vehicle_id": 1,
+      "name": "VinFast - VF3",
+      "image_url": "assets/images/4_seater_car_image1.png",
+      "capacity": 4,
+      "pricing": {
+        "base_fare": 5.0,
+        "price_per_km": 2.0,
+        "price_per_day": 40.0
+      }
+    }
+  },
+
+  {
+    "booking_id": 2,
+    "pickup_location": "120 Tran Phu",
+    "destination": "My Khe Beach",
+    "service_type": "Intercity",
+    "pickup_datetime": "2024-07-02T14:30:00",
+    "passenger_count": 3,
+    "booking_status": "On-Going",
+    "distance_km": 6.8,
+    "final_price": 18.5,
+
+    "vehicle": {
+      "vehicle_id": 7,
+      "name": "Hyundai - Santa Fe",
+      "image_url": "assets/images/7_seater_car_image2.png",
+      "capacity": 7,
+      "pricing": {
+        "base_fare": 7.0,
+        "price_per_km": 2.5,
+        "price_per_day": 65.0
+      }
+    }
+  },
+
+  {
+    "booking_id": 3,
+    "pickup_location": "45 Le Duan",
+    "destination": "Hoi An Ancient Town",
+    "service_type": "Intercity",
+    "pickup_datetime": "2024-07-03T09:00:00",
+    "passenger_count": 4,
+    "booking_status": "Completed",
+    "distance_km": 28.0,
+    "final_price": 60.0,
+
+    "vehicle": {
+      "vehicle_id": 2,
+      "name": "Toyota - Vios",
+      "image_url": "assets/images/4_seater_car_image2.png",
+      "capacity": 4,
+      "pricing": {
+        "base_fare": 6.0,
+        "price_per_km": 2.2,
+        "price_per_day": 45.0
+      }
+    }
+  },
+
+  {
+    "booking_id": 4,
+    "pickup_location": "Da Nang Train Station",
+    "destination": "Ba Na Hills",
+    "service_type": "Intercity",
+    "pickup_datetime": "2024-07-04T08:30:00",
+    "passenger_count": 5,
+    "booking_status": "On-Going",
+    "distance_km": 32.0,
+    "final_price": 75.0,
+
+    "vehicle": {
+      "vehicle_id": 5,
+      "name": "Kia - Carnival",
+      "image_url": "assets/images/7_seater_car_image1.png",
+      "capacity": 7,
+      "pricing": {
+        "base_fare": 8.0,
+        "price_per_km": 2.8,
+        "price_per_day": 80.0
+      }
+    }
+  },
+
+  {
+    "booking_id": 5,
+    "pickup_location": "My Khe Beach",
+    "destination": "Dragon Bridge",
+    "service_type": "City Ride",
+    "pickup_datetime": "2024-07-05T19:00:00",
+    "passenger_count": 2,
+    "booking_status": "Canceled",
+    "distance_km": 4.2,
+    "final_price": 12.0,
+
+    "vehicle": {
+      "vehicle_id": 3,
+      "name": "Honda - City",
+      "image_url": "assets/images/4_seater_car_image3.png",
+      "capacity": 4,
+      "pricing": {
+        "base_fare": 5.5,
+        "price_per_km": 2.0,
+        "price_per_day": 42.0
+      }
+    }
+  }
+]

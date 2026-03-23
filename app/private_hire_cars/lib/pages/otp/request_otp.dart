@@ -48,12 +48,12 @@ class _RequestOtpPageState extends State<RequestOtpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: const Color(0xfff6f7f9),
+      appBar: AppBar(backgroundColor: const Color(0xfff6f7f9)),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const SizedBox(height: 40),
             const Text(
               "Enter your email",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -76,6 +76,10 @@ class _RequestOtpPageState extends State<RequestOtpPage> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                  backgroundColor: Colors.black,
+                ),
                 onPressed: loading ? null : next,
                 child: loading
                     ? const CircularProgressIndicator()

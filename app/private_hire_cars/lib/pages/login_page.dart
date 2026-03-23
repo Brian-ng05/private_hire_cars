@@ -29,7 +29,17 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Private Hire Cars"), centerTitle: true),
+      backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
+        title: const Text("Private Hire Cars"),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
 
       body: SafeArea(
         child: SingleChildScrollView(
@@ -76,13 +86,34 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              /// RESET
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const RequestOtpPage(type: "PASSWORD_RESET"),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Forgot password?",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+
+              // const SizedBox(height: 12),
 
               /// LOGIN BUTTON
               FilledButton(
                 onPressed: isLoading ? null : onLoginPressed,
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(double.infinity, 48),
+                  backgroundColor: Colors.black,
                 ),
                 child: isLoading
                     ? const SizedBox(
@@ -93,13 +124,57 @@ class _LoginPageState extends State<LoginPage> {
                     : const Text("Login"),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 28),
+
+              Row(
+                children: const [
+                  Expanded(child: Divider(thickness: 1)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      "or Log in with",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 113, 109, 109),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Divider(thickness: 1)),
+                ],
+              ),
+
+              /// GOOGLE LOGIN
+              const SizedBox(height: 28),
+
+              OutlinedButton(
+                onPressed: () {
+                  // TODO: GOOGLE Sign In
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  side: const BorderSide(color: Colors.grey),
+                  backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icon/google_icon.png', height: 22),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
 
               /// SIGN UP
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                  const Text(
+                    "Don't have an account? ",
+                    style: TextStyle(color: Color.fromARGB(255, 113, 109, 109)),
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -110,25 +185,13 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       );
                     },
-                    child: const Text("Sign up"),
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ],
               ),
-
-              /// RESET
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          const RequestOtpPage(type: "PASSWORD_RESET"),
-                    ),
-                  );
-                },
-                child: const Text("Forgot password?"),
-              ),
-
               const SizedBox(height: 40),
             ],
           ),

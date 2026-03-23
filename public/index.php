@@ -108,6 +108,46 @@ switch ($path) {
     require __DIR__ . '/../testMail.php';
     break;
 
+    case '/api/distance':
+        if ($method !== 'POST') {
+            http_response_code(405);
+            echo json_encode([
+                "status"  => 405,
+                "summary" => "Method Not Allowed",
+                "detail"  => "Use POST method"
+            ]);
+            exit;
+        }
+        require __DIR__ . '/../backend/api/utils/distance.php';
+        break;
+
+    case '/api/get_car_quote':
+        if ($method !== 'POST') {
+            http_response_code(405);
+            echo json_encode([
+                "status"  => 405,
+                "summary" => "Method Not Allowed",
+                "detail"  => "Use POST method"
+            ]);
+            exit;
+        }
+        require __DIR__ . '/../backend/api/booking/ride_now/get_car_quote.php';
+        break;
+
+    case '/api/send_email_booking':
+        if ($method !== 'POST') {
+            http_response_code(405);
+            echo json_encode([
+                "status"  => 405,
+                "summary" => "Method Not Allowed",
+                "detail"  => "Use POST method"
+            ]);
+            exit;
+        }
+        require __DIR__ . '/../backend/api/auth/send_booking_email.php';
+
+        break;
+
     default:
         http_response_code(404);
         echo json_encode([
@@ -115,4 +155,7 @@ switch ($path) {
             "summary" => "Not Found",
             "detail"  => "Endpoint does not exist"
         ]);
+
+    
+
 }

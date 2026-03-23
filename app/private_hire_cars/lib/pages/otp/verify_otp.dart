@@ -75,30 +75,37 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          const SizedBox(height: 40),
-          const Text(
-            "Enter verification code",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
+      backgroundColor: const Color(0xfff6f7f9),
+      appBar: AppBar(backgroundColor: const Color(0xfff6f7f9)),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              "Enter verification code",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, buildBox),
-          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(6, buildBox),
+            ),
 
-          const SizedBox(height: 30),
+            const SizedBox(height: 30),
 
-          FilledButton(
-            onPressed: loading ? null : verify,
-            child: loading
-                ? const CircularProgressIndicator()
-                : const Text("Next"),
-          ),
-        ],
+            FilledButton(
+              onPressed: loading ? null : verify,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+                backgroundColor: Colors.black,
+              ),
+              child: loading
+                  ? const CircularProgressIndicator()
+                  : const Text("Next"),
+            ),
+          ],
+        ),
       ),
     );
   }
