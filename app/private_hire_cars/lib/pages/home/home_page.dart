@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../data/home_data.dart';
 import 'package:private_hire_cars/classes/homePage/service_card.dart';
 import 'package:private_hire_cars/pages/home/location_page.dart';
 import 'package:private_hire_cars/pages/home/meet_and_greet.dart';
@@ -13,217 +12,201 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // --- MOCK DATA ---
-  final List<ServiceItem> services = [
-    ServiceItem(id: '1', title: 'Ride now', subtitle: 'Book a trip', icon: Icons.directions_car_filled_outlined, route: '/booking'),
-    ServiceItem(id: '2', title: 'Airport', subtitle: 'Pick up at airport', icon: Icons.flight_takeoff, route: '/booking'),
-    ServiceItem(id: '3', title: 'Intercity', subtitle: 'Long distance', icon: Icons.location_city, route: '/booking'),
-    ServiceItem(id: '4', title: 'Daily hire', subtitle: 'Car and driver', icon: Icons.schedule, route: '/booking'),
-  ];
-
-  final List<PromotionItem> promotions = [
-    PromotionItem(id: '101', title: 'Lunar New Year', discountCode: 'LNY2025', discountAmount: '20% OFF', backgroundColor: Colors.redAccent, route: '/promo-details'),
-    PromotionItem(id: '102', title: 'First Ride', discountCode: 'WELCOME', discountAmount: '50% OFF', backgroundColor: Colors.blueAccent, route: '/promo-details'),
-    PromotionItem(id: '103', title: 'Weekend', discountCode: 'WEEKEND', discountAmount: '10% OFF', backgroundColor: Colors.green, route: '/promo-details'),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xfff6f7f9),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- HEADER SECTION ---
               const Text(
-                "Hello, User!",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                "Hello, Brian!",
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 5),
+
+              const SizedBox(height: 6),
+
               Row(
                 children: const [
-                  Icon(Icons.location_on_outlined, size: 16, color: Colors.black),
-                  SizedBox(width: 5),
-                  Text(
-                    "Son Tra, Da Nang",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  Icon(Icons.location_on, size: 18),
+                  SizedBox(width: 4),
+                  Text("Son Tra, Da Nang", style: TextStyle(fontSize: 15)),
+                ],
+              ),
+
+              const SizedBox(height: 18),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black12),
+                ),
+                child: const TextField(
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.search),
+                    hintText: "Where to?",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              const Text(
+                "Services",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 16),
+
+              GridView.count(
+                crossAxisCount: 3, // 3 columns
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                childAspectRatio: 0.8,
+                children: [
+                  ServiceCard(
+                    icon: Icons.directions_car,
+                    title: "Hotel transfer",
+                    subtitle: "",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const LocationPage(title: "Hotel Transfer"),
+                        ),
+                      );
+                    },
+                  ),
+
+                  ServiceCard(
+                    icon: Icons.local_airport,
+                    title: "Airport transfer",
+                    subtitle: "",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const LocationPage(title: "Airport Transfer"),
+                        ),
+                      );
+                    },
+                  ),
+
+                  ServiceCard(
+                    icon: Icons.emoji_people,
+                    title: "Meet & Greet",
+                    subtitle: "",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const MeetAndGreet(title: "Meet & Greet"),
+                        ),
+                      );
+                    },
+                  ),
+
+                  ServiceCard(
+                    icon: Icons.route_outlined,
+                    title: "Intercity",
+                    subtitle: "Local/Long distance",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const LocationPage(title: "Transport"),
+                        ),
+                      );
+                    },
+                  ),
+
+                  ServiceCard(
+                    icon: Icons.access_time,
+                    title: "Daily hire",
+                    subtitle: "Car and driver",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const LocationPage(title: "Transport"),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-
-              // --- SEARCH BAR ---
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.grey.shade300),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    hintText: "Where to?",
-                    prefixIcon: Icon(Icons.search, color: Colors.black),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+              GestureDetector(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
                   ),
-                ),
-              ),
-              const SizedBox(height: 25),
-
-              // --- SERVICES GRID (CÓ BORDER ĐEN) ---
-              const Text(
-                "Services",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 15),
-              Wrap(
-                spacing: 15,
-                runSpacing: 15,
-                children: services.map((service) {
-                  return _buildServiceCard(
-                    icon: service.icon,
-                    title: service.title,
-                    subtitle: service.subtitle,
-                    onTap: () {
-                      print("User clicked ${service.title}");
-                    },
-                  );
-                }).toList(),
-              ),
-
-              const SizedBox(height: 25),
-
-              // --- DISCOUNT SECTION ---
-              const Text(
-                "Discount",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 15),
-              SizedBox(
-                height: 180,
-                child: PageView.builder(
-                  controller: PageController(viewportFraction: 0.9),
-                  itemCount: promotions.length,
-                  itemBuilder: (context, index) {
-                    final promo = promotions[index];
-                    return _buildDiscountBanner(
-                      promo.backgroundColor,
-                      promo.title,
-                      promo.discountAmount,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // --- HELPER WIDGETS ---
-
-  Widget _buildServiceCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    double cardWidth = (MediaQuery.of(context).size.width - 40 - 15) / 2;
-
-    return Material(
-      color: Colors.white, 
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Colors.black, width: 1.0), // Border đen dày 1.0
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        hoverColor: Colors.grey.shade200,
-        splashColor: Colors.grey.shade300,
-        child: Container(
-          width: cardWidth,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, size: 40, color: Colors.black),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDiscountBanner(Color color, String title, String discount) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: 20,
-            top: 40,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  discount,
-                  style: const TextStyle(
-                    color: Colors.yellow,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 32,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                    border: Border.all(color: Colors.grey.shade300, width: 1),
+                    borderRadius: BorderRadius.circular(18),
                   ),
-                  child: const Text(
-                    "BOOK NOW & SAVE",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.phone),
+
+                      const SizedBox(width: 10),
+
+                      Expanded(
+                        child: Text(
+                          "Contact to the Admin Center",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              const Text(
+                "Discount",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 16),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  "assets/images/banner.png",
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
