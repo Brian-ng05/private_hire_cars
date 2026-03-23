@@ -13,8 +13,12 @@
         .discount-val { font-size: 2rem; font-weight: 800; margin: 10px 0; color: #28a745; }
         .coupon-code { background: #eee; padding: 5px 10px; border-radius: 4px; font-family: monospace; font-weight: bold; }
         
-        /* Modal Style */
-        .toast { display: none; position: fixed; bottom: 30px; right: 30px; background: #000; color: #fff; padding: 15px 25px; border-radius: 8px; z-index: 10000; }
+        /* Toast Notification */
+        .toast { display: none; position: fixed; bottom: 30px; right: 30px; background: #000; color: #fff; padding: 15px 25px; border-radius: 8px; z-index: 10000; animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Deactivated State */
+        .deactivated { opacity: 0.4; pointer-events: none; filter: grayscale(1); border-style: dotted; }
     </style>
 </head>
 <body>
@@ -36,41 +40,20 @@
         <header class="top-bar">
             <div>
                 <h1>Coupon & Offers Management</h1>
-                <p style="color: #888;">Create and monitor promotional codes for customers.</p>
+                <p style="color: #888;">Create and monitor promotional codes (US #24).</p>
             </div>
-            <button class="btn-primary" onclick="openCouponModal()">+ Create New Coupon</button>
+            <button class="btn-primary" onclick="openCreateModal()">+ Create New Coupon</button>
         </header>
 
         <section class="coupon-grid" id="couponContainer">
-            <div class="coupon-card">
-                <span class="coupon-badge">LOYALTY</span>
-                <h3>Welcome Back Offer</h3>
-                <div class="discount-val">15% OFF</div>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Applied for customers with more than 10 bookings.</p>
-                <p>Code: <span class="coupon-code">LOYAL15</span></p>
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <button class="btn-primary" style="font-size: 0.75rem; background:#666;">Edit</button>
-                    <button class="btn-primary" style="font-size: 0.75rem; background:#e53e3e;">Deactivate</button>
-                </div>
-            </div>
-
-            <div class="coupon-card">
-                <span class="coupon-badge">EVENT</span>
-                <h3>Airport Transfer Special</h3>
-                <div class="discount-val">£5.00 OFF</div>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Summer event discount for all airport routes.</p>
-                <p>Code: <span class="coupon-code">FLYHIGH5</span></p>
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <button class="btn-primary" style="font-size: 0.75rem; background:#666;">Edit</button>
-                    <button class="btn-primary" style="font-size: 0.75rem; background:#e53e3e;">Deactivate</button>
-                </div>
-            </div>
+            <div id="cp-LOYAL15"></div>
+            <div id="cp-FLYHIGH5"></div>
         </section>
     </main>
 
     <div id="couponModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);">
         <div class="modal-content" style="background:#fff; margin:5% auto; padding:30px; border-radius:12px; width:600px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-            <h2 style="margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;">Create New Coupon</h2>
+            <h2 id="modalTitle" style="margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;">Create New Coupon</h2>
             
             <form id="couponForm" class="booking-form">
                 <div class="form-group">
@@ -78,12 +61,12 @@
                     <input type="text" id="cpName" placeholder="e.g. Christmas Sale" required>
                 </div>
                 <div class="form-group">
-                    <label>Discount Value (% or £)</label>
+                    <label>Discount Value</label>
                     <input type="text" id="cpValue" placeholder="e.g. 20% or £10" required>
                 </div>
                 <div class="form-group">
                     <label>Coupon Code</label>
-                    <input type="text" id="cpCode" placeholder="e.g. XMAS2026" required style="text-transform: uppercase;">
+                    <input type="text" id="cpCode" placeholder="XMAS2026" required style="text-transform: uppercase;">
                 </div>
                 <div class="form-group">
                     <label>Category</label>
@@ -95,58 +78,109 @@
                 </div>
                 <div class="form-group full-width">
                     <label>Description</label>
-                    <textarea id="cpDesc" rows="3" placeholder="Explain the event or reward conditions..." style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
-                </div>
-                <div class="form-group full-width">
-                    <label>Upload Thumbnail (Optional)</label>
-                    <input type="file" accept="image/*">
+                    <textarea id="cpDesc" rows="3" placeholder="Explain the reward conditions..." style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
                 </div>
 
                 <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 10px;">
                     <button type="button" class="btn-primary" style="background:#888;" onclick="closeCouponModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Publish Coupon</button>
+                    <button type="submit" class="btn-primary">Save Coupon</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="couponToast" class="toast">✅ New Coupon Published Successfully!</div>
+    <div id="couponToast" class="toast"></div>
 
     <script>
-        function openCouponModal() { document.getElementById('couponModal').style.display = "block"; }
+        let isEditing = false;
+        let editTargetCode = "";
+
+        // Mock data khởi tạo
+        const initialCoupons = [
+            { name: "Welcome Back Offer", value: "15%", code: "LOYAL15", category: "Loyalty", desc: "Applied for customers with more than 10 bookings." },
+            { name: "Airport Special", value: "£5.00", code: "FLYHIGH5", category: "Event", desc: "Summer discount for all airport routes." }
+        ];
+
+        function init() {
+            const container = document.getElementById('couponContainer');
+            container.innerHTML = "";
+            initialCoupons.forEach(cp => {
+                container.innerHTML += renderCouponHTML(cp);
+            });
+        }
+
+        function renderCouponHTML(data) {
+            return `
+                <div class="coupon-card" id="cp-${data.code}">
+                    <span class="coupon-badge">${data.category.toUpperCase()}</span>
+                    <h3>${data.name}</h3>
+                    <div class="discount-val">${data.value} OFF</div>
+                    <p style="color: #666; font-size: 0.85rem; margin-bottom: 15px; min-height: 40px;">${data.desc}</p>
+                    <p>Code: <span class="coupon-code">${data.code}</span></p>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn-primary" style="font-size: 0.7rem; background:#666;" 
+                                onclick="editCoupon('${data.code}', '${data.name}', '${data.value}', '${data.category}', '${data.desc.replace(/'/g, "\\'")}')">Edit</button>
+                        <button class="btn-primary" style="font-size: 0.7rem; background:#e53e3e;" 
+                                onclick="deactivateCoupon('${data.code}')">Deactivate</button>
+                    </div>
+                </div>`;
+        }
+
+        function openCreateModal() {
+            isEditing = false;
+            document.getElementById('couponForm').reset();
+            document.getElementById('modalTitle').innerText = "Create New Coupon";
+            document.getElementById('couponModal').style.display = "block";
+        }
+
+        function editCoupon(code, name, value, category, desc) {
+            isEditing = true;
+            editTargetCode = code;
+            document.getElementById('modalTitle').innerText = "Edit Coupon: " + code;
+            document.getElementById('cpName').value = name;
+            document.getElementById('cpValue').value = value;
+            document.getElementById('cpCode').value = code;
+            document.getElementById('cpCategory').value = category;
+            document.getElementById('cpDesc').value = desc;
+            document.getElementById('couponModal').style.display = "block";
+        }
+
+        function deactivateCoupon(code) {
+            if(confirm(`Deactivate coupon [${code}]? This action cannot be undone.`)) {
+                document.getElementById(`cp-${code}`).classList.add('deactivated');
+                showToast("⚠️ Coupon " + code + " has been deactivated.");
+            }
+        }
+
         function closeCouponModal() { document.getElementById('couponModal').style.display = "none"; }
 
         document.getElementById('couponForm').onsubmit = function(e) {
             e.preventDefault();
-            
-            const name = document.getElementById('cpName').value;
-            const val = document.getElementById('cpValue').value;
-            const code = document.getElementById('cpCode').value.toUpperCase();
-            const desc = document.getElementById('cpDesc').value;
-            const cat = document.getElementById('cpCategory').value;
+            const data = {
+                name: document.getElementById('cpName').value,
+                value: document.getElementById('cpValue').value,
+                code: document.getElementById('cpCode').value.toUpperCase(),
+                category: document.getElementById('cpCategory').value,
+                desc: document.getElementById('cpDesc').value
+            };
 
-            const container = document.getElementById('couponContainer');
-            const newCard = `
-                <div class="coupon-card">
-                    <span class="coupon-badge">${cat.toUpperCase()}</span>
-                    <h3>${name}</h3>
-                    <div class="discount-val">${val} OFF</div>
-                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">${desc}</p>
-                    <p>Code: <span class="coupon-code">${code}</span></p>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        <button class="btn-primary" style="font-size: 0.75rem; background:#666;">Edit</button>
-                        <button class="btn-primary" style="font-size: 0.75rem; background:#e53e3e;">Deactivate</button>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('afterbegin', newCard);
-
+            if (isEditing) {
+                document.getElementById(`cp-${editTargetCode}`).outerHTML = renderCouponHTML(data);
+                showToast("✅ Coupon updated successfully!");
+            } else {
+                document.getElementById('couponContainer').insertAdjacentHTML('afterbegin', renderCouponHTML(data));
+                showToast("✅ New coupon published!");
+            }
             closeCouponModal();
-            const toast = document.getElementById('couponToast');
-            toast.style.display = "block";
-            setTimeout(() => { toast.style.display = "none"; }, 3000);
-            this.reset();
         };
+
+        function showToast(msg) {
+            const t = document.getElementById('couponToast');
+            t.innerText = msg; t.style.display = "block";
+            setTimeout(() => { t.style.display = "none"; }, 3000);
+        }
+
+        init();
     </script>
 </body>
 </html>
