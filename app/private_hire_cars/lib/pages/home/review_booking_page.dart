@@ -368,7 +368,7 @@ class _ReviewOrderPageState extends State<ReviewOrderPage> {
                   onPressed: () async {
                     try {
                       await AuthService.sendBookingEmail(
-                        email: "user@gmail.com",
+                        email: "nguyenbao12122005@gmail.com",
                         departure: widget.departure,
                         destination: widget.destination,
                         carName: widget.vehicle.name,
