@@ -48,7 +48,6 @@
                 <h1>Register New Customer</h1>
                 <p style="color: #888;">Create a secure account for a new client.</p>
             </div>
-            <div class="staff-profile">Operator: Nguyen A | ID: #GCD240123</div>
         </header>
 
         <section class="card full-width-card">
@@ -97,7 +96,7 @@
         </section>
     </main>
 
-    <div id="regToast" class="toast">✅ Customer Account Registered!</div>
+    <div id="regToast" class="toast">Customer Account Registered!</div>
 
     <script>
         document.getElementById('createCustForm').onsubmit = function(e) {
@@ -106,7 +105,7 @@
             const confirm = document.getElementById('confirmPass').value;
 
             if(pass !== confirm) {
-                alert("❌ Passwords do not match!");
+                alert("Passwords do not match!");
                 return;
             }
 
