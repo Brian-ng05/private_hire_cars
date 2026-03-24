@@ -22,26 +22,97 @@ class BookingDetailsPage extends StatefulWidget {
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
   late String bookingStatus;
 
+  String cancelTimeText = "24h left";
+
   @override
   void initState() {
     super.initState();
     bookingStatus = widget.trip.bookingStatus;
+
+    if (widget.trip.serviceType == "Intercity") {
+      cancelTimeText = "12h left";
+    } else if (widget.trip.serviceType == "City Ride") {
+      cancelTimeText = "6h left";
+    }
   }
 
   Color getStatusColor(String status) {
     switch (status) {
       case "Completed":
         return Colors.green;
-
       case "On-Going":
         return Colors.blue;
-
       case "Canceled":
         return Colors.grey;
-
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _bullet(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("• "),
+          Expanded(child: Text(text)),
+        ],
+      ),
+    );
+  }
+
+  /// SERVICE DETAILS
+  Widget buildServiceDetails(Trip trip) {
+    final pricing = trip.vehicle.pricing;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${trip.serviceType} Details",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+
+          /// COMMON
+          _bullet("Passengers: ${trip.passengerCount}"),
+          _bullet("Distance: ${trip.distanceKm} km"),
+
+          const SizedBox(height: 6),
+
+          _bullet("Base fare: £${pricing.baseFare.toStringAsFixed(2)}"),
+          _bullet("Price per km: £${pricing.pricePerKm.toStringAsFixed(2)}"),
+
+          const SizedBox(height: 8),
+
+          /// SERVICE-SPECIFIC
+          if (trip.serviceType == "Airport Transfer") ...[
+            _bullet("Meet & Greet service included"),
+            _bullet("Waiting allowance: up to 60 minutes"),
+            _bullet("Suitable for flights and luggage handling"),
+          ] else if (trip.serviceType == "Intercity") ...[
+            _bullet("Trip between different cities"),
+            _bullet("Pricing based on total distance"),
+            _bullet("Long-distance travel"),
+          ] else if (trip.serviceType == "City Ride") ...[
+            _bullet("Short trips within the city"),
+            _bullet(
+              "Estimated duration: ${(trip.distanceKm * 3).toInt()} mins",
+            ),
+            _bullet("Suitable for daily travel"),
+          ],
+        ],
+      ),
+    );
   }
 
   @override
@@ -64,46 +135,33 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
+              /// ROUTE
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
                   Column(
                     children: [
                       const Icon(Icons.circle_outlined),
-
                       Container(
                         width: 2,
                         height: 85,
                         color: Colors.grey.shade400,
                       ),
-
                       const Icon(Icons.location_on_outlined),
                     ],
                   ),
-
                   const SizedBox(width: 12),
 
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
                         const Text(
                           "Departure",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          trip.pickupLocation,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                          ),
-                        ),
+                        Text(trip.pickupLocation),
 
                         const SizedBox(height: 20),
 
@@ -111,70 +169,44 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                           "Destination",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          trip.destination,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 52, 52, 52),
-                          ),
-                        ),
+                        Text(trip.destination),
                       ],
                     ),
                   ),
                 ],
               ),
 
-              const Divider(height: 30, thickness: 1),
+              const Divider(height: 30),
 
-              /// ===== PICKUP TIME =====
+              /// TIME
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
                 children: [
                   const Icon(Icons.calendar_month_outlined),
-
                   const SizedBox(width: 12),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
-                      children: [
-                        const Text(
-                          "Pickup time",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        if (trip.pickupDatetime != null)
-                          Text(
-                            DateFormat(
-                              'HH:mm dd/MM/yyyy',
-                            ).format(trip.pickupDatetime!),
-
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(255, 52, 52, 52),
-                            ),
-                          ),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Pickup time",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        DateFormat(
+                          'HH:mm dd/MM/yyyy',
+                        ).format(trip.pickupDatetime),
+                      ),
+                    ],
                   ),
                 ],
               ),
 
               const SizedBox(height: 20),
 
-              /// ===== SERVICE =====
+              /// SERVICE
               Row(
                 children: [
                   const Icon(Icons.local_taxi_outlined),
-
                   const SizedBox(width: 12),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -182,55 +214,20 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                         "Service",
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
-
-                      const SizedBox(height: 4),
-
-                      Text(
-                        trip.serviceType,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 52, 52, 52),
-                        ),
-                      ),
+                      Text(trip.serviceType),
                     ],
                   ),
                 ],
               ),
 
-              const SizedBox(height: 20),
-
-              /// ===== DISTANCE =====
-              Row(
-                children: [
-                  const Icon(Icons.route_outlined),
-
-                  const SizedBox(width: 12),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Distance",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      Text(
-                        "${trip.distanceKm} km",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 52, 52, 52),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              /// ADDITIONAL INFO BOX
+              buildServiceDetails(trip),
 
               const SizedBox(height: 20),
 
-              /// VEHICEL
+              /// VEHICLE
+              const SizedBox(height: 20),
+
               const Text(
                 "Vehicle Details",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -266,15 +263,11 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                         },
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.all(12),
                       child: Text(
                         "${widget.vehicle.name} / Capacity: ${widget.vehicle.capacity}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -283,32 +276,17 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               const SizedBox(height: 20),
 
-              /// ===== STATUS =====
+              /// STATUS
               Row(
                 children: [
                   const Icon(Icons.info_outline),
-
                   const SizedBox(width: 12),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Status",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-
-                      const SizedBox(height: 4),
-
-                      Text(
-                        bookingStatus,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: getStatusColor(bookingStatus),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    bookingStatus,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: getStatusColor(bookingStatus),
+                    ),
                   ),
                 ],
               ),
@@ -317,30 +295,24 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         ),
       ),
 
-      /// ===== BOTTOM BAR =====
+      /// ===== BOTTOM =====
       bottomNavigationBar: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-
           decoration: const BoxDecoration(
-            color: Colors.white,
             border: Border(top: BorderSide(color: Colors.black12)),
           ),
-
           child: Column(
             mainAxisSize: MainAxisSize.min,
-
             children: [
-              /// PRICE
+              /// TOTAL
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                 children: [
                   const Text(
                     "Total",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-
                   Text(
                     "£${trip.finalPrice}",
                     style: const TextStyle(
@@ -353,47 +325,73 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               const SizedBox(height: 20),
 
-              /// CANCEL BUTTON
-              SizedBox(
-                width: double.infinity,
-                height: 50,
+              Row(
+                children: [
+                  /// AMEND
+                  if (!(bookingStatus == "Completed" ||
+                      bookingStatus == "Canceled"))
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () {},
+                        child: const Text("Amend"),
+                      ),
+                    ),
 
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        (bookingStatus == "Completed" ||
-                            bookingStatus == "Canceled")
-                        ? Colors.grey
-                        : Colors.red,
+                  if (!(bookingStatus == "Completed" ||
+                      bookingStatus == "Canceled"))
+                    const SizedBox(width: 10),
 
-                    foregroundColor: Colors.white,
-                  ),
-
-                  onPressed:
-                      (bookingStatus == "Completed" ||
-                          bookingStatus == "Canceled")
-                      ? null
-                      : () {
-                          setState(() {
-                            bookingStatus = "Canceled";
-                          });
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Booking has been canceled"),
+                  /// CANCEL
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            (bookingStatus == "Completed" ||
+                                bookingStatus == "Canceled")
+                            ? Colors.grey
+                            : Colors.red,
+                        foregroundColor: Colors.white,
+                        disabledForegroundColor: Colors.white,
+                      ),
+                      onPressed:
+                          (bookingStatus == "Completed" ||
+                              bookingStatus == "Canceled")
+                          ? null
+                          : () {
+                              setState(() {
+                                bookingStatus = "Canceled";
+                              });
+                            },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              bookingStatus == "Completed"
+                                  ? "Completed"
+                                  : bookingStatus == "Canceled"
+                                  ? "Canceled"
+                                  : "Cancel",
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          );
-                        },
-
-                  child: Text(
-                    bookingStatus == "Completed"
-                        ? "Completed"
-                        : bookingStatus == "Canceled"
-                        ? "Canceled"
-                        : "Cancel Booking",
-                    style: const TextStyle(fontSize: 16),
+                          ),
+                          if (!(bookingStatus == "Completed" ||
+                              bookingStatus == "Canceled")) ...[
+                            const SizedBox(width: 6),
+                            Text(
+                              "($cancelTimeText)",
+                              style: const TextStyle(color: Colors.white70),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
