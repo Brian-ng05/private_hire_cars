@@ -8,7 +8,7 @@
     "passenger_count": 2,
     "booking_status": "Completed",
     "distance_km": 15.5,
-    "final_price": 35.0,
+    "final_price": 36.0,
 
     "vehicle": {
       "vehicle_id": 1,
@@ -25,14 +25,14 @@
 
   {
     "booking_id": 2,
-    "pickup_location": "120 Tran Phu",
-    "destination": "My Khe Beach",
+    "pickup_location": "Da Nang",
+    "destination": "Hoi An",
     "service_type": "Intercity",
     "pickup_datetime": "2024-07-02T14:30:00",
     "passenger_count": 3,
     "booking_status": "On-Going",
-    "distance_km": 6.8,
-    "final_price": 18.5,
+    "distance_km": 45.0,
+    "final_price": 119.50,
 
     "vehicle": {
       "vehicle_id": 7,
@@ -55,8 +55,8 @@
     "pickup_datetime": "2024-07-03T09:00:00",
     "passenger_count": 4,
     "booking_status": "Completed",
-    "distance_km": 28.0,
-    "final_price": 60.0,
+    "distance_km": 35.0,
+    "final_price": 83.00,
 
     "vehicle": {
       "vehicle_id": 2,
@@ -80,7 +80,7 @@
     "passenger_count": 5,
     "booking_status": "On-Going",
     "distance_km": 32.0,
-    "final_price": 75.0,
+    "final_price": 97.60,
 
     "vehicle": {
       "vehicle_id": 5,
@@ -104,7 +104,7 @@
     "passenger_count": 2,
     "booking_status": "Canceled",
     "distance_km": 4.2,
-    "final_price": 12.0,
+    "final_price": 13.90,
 
     "vehicle": {
       "vehicle_id": 3,
