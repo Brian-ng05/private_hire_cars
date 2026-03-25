@@ -21,7 +21,7 @@ class BookingDetailsPage extends StatefulWidget {
 
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
   late String bookingStatus;
-
+  final bookingId = DateTime.now().millisecondsSinceEpoch.toString();
   String cancelTimeText = "24h left";
 
   @override
@@ -136,6 +136,16 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "Booking ID: #$bookingId",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 81, 81, 81),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
               /// ROUTE
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +155,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                       const Icon(Icons.circle_outlined),
                       Container(
                         width: 2,
-                        height: 85,
+                        height: 50,
                         color: Colors.grey.shade400,
                       ),
                       const Icon(Icons.location_on_outlined),
@@ -163,7 +173,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                         ),
                         Text(trip.pickupLocation),
 
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 25),
 
                         const Text(
                           "Destination",

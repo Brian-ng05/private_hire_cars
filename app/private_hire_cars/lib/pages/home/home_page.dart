@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 childAspectRatio: 0.8,
                 children: [
                   ServiceCard(
-                    icon: Icons.directions_car,
+                    icon: Icons.apartment_rounded,
                     title: "Hotel transfer",
                     subtitle: "",
                     onTap: () {
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   ServiceCard(
-                    icon: Icons.access_time,
+                    icon: Icons.directions_car_filled_outlined,
                     title: "Daily hire",
                     subtitle: "Car and driver",
                     onTap: () {
