@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:private_hire_cars/classes/homePage/service_card.dart';
 import 'package:private_hire_cars/pages/home/location_page.dart';
 import 'package:private_hire_cars/pages/home/meet_and_greet.dart';
+import 'package:private_hire_cars/pages/rent_car/date_picker_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -141,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              const LocationPage(title: "Transport"),
+                              const DateRangePage(title: "Select date & time"),
                         ),
                       );
                     },
