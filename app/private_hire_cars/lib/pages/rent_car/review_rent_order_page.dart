@@ -15,6 +15,7 @@ class ReviewRentOrderPage extends StatefulWidget {
     required this.vehicle,
     required this.durationHours,
     required this.rentPrice,
+    required this.location,
   });
 
   final DateTime pickupTime;
@@ -22,6 +23,7 @@ class ReviewRentOrderPage extends StatefulWidget {
   final Vehicle? vehicle;
   final int durationHours;
   final double rentPrice;
+  final String location;
 
   @override
   State<ReviewRentOrderPage> createState() => _ReviewRentOrderPageState();
@@ -57,36 +59,20 @@ class _ReviewRentOrderPageState extends State<ReviewRentOrderPage> {
             children: [
               /// ===== RENTAL DETAILS =====
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: double.infinity,
-                    child: const Text(
-                      "Rental details",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  const Text(
+                    "Rental details",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 20),
 
+                  /// LOCATION
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        children: [
-                          const Icon(Icons.calendar_today_outlined, size: 20),
-
-                          Container(
-                            width: 2,
-                            height: 85,
-                            color: Colors.grey.shade400,
-                          ),
-
-                          const Icon(Icons.event_available_outlined, size: 22),
-                        ],
-                      ),
+                      const Icon(Icons.location_on_outlined),
 
                       const SizedBox(width: 12),
 
@@ -95,33 +81,77 @@ class _ReviewRentOrderPageState extends State<ReviewRentOrderPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              "Pickup Time",
+                              "Pickup Location",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
 
                             const SizedBox(height: 4),
 
                             Text(
+                              widget.location,
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 52, 52, 52),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// PICKUP TIME
+                  Row(
+                    children: [
+                      const Icon(Icons.login_outlined),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Pickup",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+
+                            Text(
                               DateFormat(
-                                'HH:mm, dd/MM/yyyy',
+                                'HH:mm - dd/MM/yyyy',
                               ).format(widget.pickupTime),
                               style: const TextStyle(
                                 color: Color.fromARGB(255, 52, 52, 52),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
 
-                            const SizedBox(height: 20),
+                  const SizedBox(height: 15),
 
+                  /// RETURN TIME
+                  Row(
+                    children: [
+                      const Icon(Icons.logout_outlined),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             const Text(
-                              "Return Time",
+                              "Return",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
 
-                            const SizedBox(height: 4),
-
                             Text(
                               DateFormat(
-                                'HH:mm, dd/MM/yyyy',
+                                'HH:mm - dd/MM/yyyy',
                               ).format(widget.returnTime),
                               style: const TextStyle(
                                 color: Color.fromARGB(255, 52, 52, 52),
@@ -134,7 +164,6 @@ class _ReviewRentOrderPageState extends State<ReviewRentOrderPage> {
                   ),
                 ],
               ),
-
               const Divider(height: 30, thickness: 1),
 
               /// ===== DURATION =====

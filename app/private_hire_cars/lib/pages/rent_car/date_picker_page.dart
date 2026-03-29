@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:private_hire_cars/pages/rent_car/select_car_rent_page.dart';
+import 'package:private_hire_cars/services/location_service.dart';
 
 const backgroundColor = Color(0xfff6f7f9);
 
@@ -14,11 +15,19 @@ class DateRangePage extends StatefulWidget {
 }
 
 class _DateRangePageState extends State<DateRangePage> {
+  /// LOCATION
+  final locationController = TextEditingController();
+  final FocusNode locationFocus = FocusNode();
+
+  bool isLoadingLocation = false;
+
+  /// PICKUP
   int pYear = DateTime.now().year;
   int pMonth = DateTime.now().month;
   int pDay = DateTime.now().day;
   int pHour = DateTime.now().hour;
 
+  /// RETURN
   int rYear = DateTime.now().year;
   int rMonth = DateTime.now().month;
   int rDay = DateTime.now().day;
@@ -30,6 +39,13 @@ class _DateRangePageState extends State<DateRangePage> {
   @override
   void initState() {
     super.initState();
+
+    /// AUTO COMPLETE ON UNFOCUS
+    locationFocus.addListener(() {
+      if (!locationFocus.hasFocus) {
+        _autoCompleteLocation();
+      }
+    });
 
     final now = DateTime.now().add(const Duration(hours: 2));
     pickupDateTime = now;
@@ -48,6 +64,40 @@ class _DateRangePageState extends State<DateRangePage> {
     rHour = r.hour;
   }
 
+  @override
+  void dispose() {
+    locationController.dispose();
+    locationFocus.dispose();
+    super.dispose();
+  }
+
+  /// AUTO COMPLETE LOCATION
+  Future<void> _autoCompleteLocation() async {
+    final text = locationController.text.trim();
+    if (text.isEmpty) return;
+
+    setState(() => isLoadingLocation = true);
+
+    try {
+      final result = await geocode(text);
+
+      if (result == null) {
+        throw Exception("Location not found");
+      }
+
+      setState(() {
+        locationController.text = result.displayName;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Location error: $e")));
+    } finally {
+      if (!mounted) return;
+      setState(() => isLoadingLocation = false);
+    }
+  }
+
   /// VALIDATE
   bool isValidPickup(DateTime dt) =>
       dt.isAfter(DateTime.now().add(const Duration(hours: 2)));
@@ -55,9 +105,12 @@ class _DateRangePageState extends State<DateRangePage> {
   bool isValidRange() =>
       returnDateTime!.difference(pickupDateTime!).inHours >= 12;
 
-  bool get canContinue => isValidPickup(pickupDateTime!) && isValidRange();
+  bool get canContinue =>
+      locationController.text.trim().isNotEmpty &&
+      isValidPickup(pickupDateTime!) &&
+      isValidRange();
 
-  /// CHECK HOUR (FIXED)
+  /// VALID HOUR
   bool isValidHour({required bool isPickup, required int h}) {
     DateTime dt;
 
@@ -70,7 +123,7 @@ class _DateRangePageState extends State<DateRangePage> {
     }
   }
 
-  /// UPDATE PICKUP (FIXED)
+  /// UPDATE PICKUP
   void updatePickup() {
     pickupDateTime = DateTime(pYear, pMonth, pDay, pHour);
 
@@ -99,7 +152,7 @@ class _DateRangePageState extends State<DateRangePage> {
     setState(() {});
   }
 
-  /// UPDATE RETURN (FIXED)
+  /// UPDATE RETURN
   void updateReturn() {
     returnDateTime = DateTime(rYear, rMonth, rDay, rHour);
 
@@ -123,6 +176,37 @@ class _DateRangePageState extends State<DateRangePage> {
     }
     if ([4, 6, 9, 11].contains(m)) return 30;
     return 31;
+  }
+
+  /// LOCATION FIELD UI
+  Widget buildLocationField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.black12),
+      ),
+      child: TextField(
+        controller: locationController,
+        focusNode: locationFocus,
+        decoration: InputDecoration(
+          icon: const Icon(Icons.location_on),
+          hintText: "Pickup location?",
+          border: InputBorder.none,
+          suffixIcon: isLoadingLocation
+              ? const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : null,
+        ),
+      ),
+    );
   }
 
   /// PICKER UI
@@ -153,30 +237,9 @@ class _DateRangePageState extends State<DateRangePage> {
       children: [
         const Row(
           children: [
-            Expanded(
-              child: Center(
-                child: Text(
-                  "DAY",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  "MONTH",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  "HOUR",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ),
-            ),
+            Expanded(child: Center(child: Text("DAY"))),
+            Expanded(child: Center(child: Text("MONTH"))),
+            Expanded(child: Center(child: Text("HOUR"))),
           ],
         ),
         const SizedBox(height: 5),
@@ -260,6 +323,11 @@ class _DateRangePageState extends State<DateRangePage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            /// LOCATION
+            buildLocationField(),
+            const SizedBox(height: 25),
+
+            /// PICKUP
             const Text(
               "Pickup time",
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -288,6 +356,7 @@ class _DateRangePageState extends State<DateRangePage> {
 
             const SizedBox(height: 25),
 
+            /// RETURN
             const Text(
               "Return time",
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -324,17 +393,20 @@ class _DateRangePageState extends State<DateRangePage> {
             const SizedBox(height: 15),
 
             FilledButton(
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => SelectCarRentPage(
-                      pickupTime: pickupDateTime!,
-                      returnTime: returnDateTime!,
-                    ),
-                  ),
-                ),
-              },
+              onPressed: canContinue
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SelectCarRentPage(
+                            pickupTime: pickupDateTime!,
+                            returnTime: returnDateTime!,
+                            location: locationController.text,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,

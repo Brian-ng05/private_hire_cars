@@ -12,10 +12,12 @@ class SelectCarRentPage extends StatefulWidget {
     super.key,
     required this.pickupTime,
     required this.returnTime,
+    required this.location,
   });
 
   final DateTime pickupTime;
   final DateTime returnTime;
+  final String location;
 
   @override
   State<SelectCarRentPage> createState() => _SelectCarRentPageState();
@@ -175,6 +177,7 @@ class _SelectCarRentPageState extends State<SelectCarRentPage> {
                           vehicle: selectedVehicle,
                           durationHours: durationHours,
                           rentPrice: selectedVehicle!.pricing.pricePerKm,
+                          location: widget.location,
                         ),
                       ),
                     );
