@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:private_hire_cars/pages/amend_booking_page.dart';
 import '../../classes/trip.dart';
 import 'package:private_hire_cars/classes/vehicles/vehicle.dart';
 
@@ -346,7 +347,18 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AmendBookingPage(
+                                initialPickup: trip.pickupDatetime,
+                                initialVehicle: trip.vehicle,
+                                quantity: trip.distanceKm,
+                              ),
+                            ),
+                          );
+                        },
                         child: const Text("Amend"),
                       ),
                     ),
