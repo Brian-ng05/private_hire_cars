@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:private_hire_cars/classes/homePage/service_card.dart';
+import 'package:private_hire_cars/pages/airport_transfer/location_page.dart';
 import 'package:private_hire_cars/pages/home/location_page.dart';
-import 'package:private_hire_cars/pages/home/meet_and_greet.dart';
 import 'package:private_hire_cars/pages/rent_car/date_picker_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -66,12 +66,12 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 16),
 
               GridView.count(
-                crossAxisCount: 3, // 3 columns
+                crossAxisCount: 2, //2 columns
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 0.8,
+                childAspectRatio: 1.2,
                 children: [
                   ServiceCard(
                     icon: Icons.apartment_rounded,
@@ -96,28 +96,28 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              const LocationPage(title: "Airport Transfer"),
+                          builder: (_) => const LocationAndTimePage(
+                            title: "Airport Transfer",
+                          ),
                         ),
                       );
                     },
                   ),
 
-                  ServiceCard(
-                    icon: Icons.emoji_people,
-                    title: "Meet & Greet",
-                    subtitle: "",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              const MeetAndGreet(title: "Meet & Greet"),
-                        ),
-                      );
-                    },
-                  ),
-
+                  // ServiceCard(
+                  //   icon: Icons.emoji_people,
+                  //   title: "Meet & Greet",
+                  //   subtitle: "",
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (_) =>
+                  //             const MeetAndGreet(title: "Meet & Greet"),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   ServiceCard(
                     icon: Icons.route_outlined,
                     title: "Intercity",
