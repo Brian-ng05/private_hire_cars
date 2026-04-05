@@ -6,6 +6,9 @@
     "image_url": "assets/images/4_seater_car_image1.png",
     "max_speed": 100,
     "capacity": 4,
+    "rating": 4.6,
+    "review_count": 32,
+    "reviews": [],
     "pricing": { "base_fare": 3, "price_per_km": 2.0, "price_per_day": 70 }
   },
   {
@@ -15,6 +18,9 @@
     "image_url": "assets/images/4_seater_car_image2.png",
     "max_speed": 100,
     "capacity": 4,
+    "rating": 4.5,
+    "review_count": 28,
+    "reviews": [],
     "pricing": { "base_fare": 3, "price_per_km": 2.2, "price_per_day": 75 }
   },
   {
@@ -24,6 +30,9 @@
     "image_url": "assets/images/4_seater_car_image3.png",
     "max_speed": 250,
     "capacity": 4,
+    "rating": 4.9,
+    "review_count": 12,
+    "reviews": [],
     "pricing": { "base_fare": 8, "price_per_km": 6.5, "price_per_day": 350 }
   },
   {
@@ -33,6 +42,9 @@
     "image_url": "assets/images/4_seater_car_image4.png",
     "max_speed": 230,
     "capacity": 4,
+    "rating": 4.4,
+    "review_count": 21,
+    "reviews": [],
     "pricing": { "base_fare": 3.5, "price_per_km": 2.5, "price_per_day": 85 }
   },
   {
@@ -42,6 +54,9 @@
     "image_url": "assets/images/4_seater_car_image5.png",
     "max_speed": 210,
     "capacity": 4,
+    "rating": 4.3,
+    "review_count": 18,
+    "reviews": [],
     "pricing": { "base_fare": 4, "price_per_km": 2.8, "price_per_day": 95 }
   },
   {
@@ -51,6 +66,9 @@
     "image_url": "assets/images/7_seater_car_image1.png",
     "max_speed": 160,
     "capacity": 7,
+    "rating": 4.5,
+    "review_count": 25,
+    "reviews": [],
     "pricing": { "base_fare": 4, "price_per_km": 2.8, "price_per_day": 110 }
   },
   {
@@ -60,6 +78,9 @@
     "image_url": "assets/images/7_seater_car_image2.png",
     "max_speed": 210,
     "capacity": 7,
+    "rating": 4.7,
+    "review_count": 30,
+    "reviews": [],
     "pricing": { "base_fare": 4.5, "price_per_km": 3.0, "price_per_day": 120 }
   },
   {
@@ -69,6 +90,9 @@
     "image_url": "assets/images/7_seater_car_image3.png",
     "max_speed": 200,
     "capacity": 7,
+    "rating": 4.6,
+    "review_count": 22,
+    "reviews": [],
     "pricing": { "base_fare": 4.5, "price_per_km": 2.9, "price_per_day": 115 }
   },
   {
@@ -78,6 +102,9 @@
     "image_url": "assets/images/7_seater_car_image4.png",
     "max_speed": 200,
     "capacity": 7,
+    "rating": 4.7,
+    "review_count": 27,
+    "reviews": [],
     "pricing": { "base_fare": 5, "price_per_km": 3.2, "price_per_day": 130 }
   },
   {
@@ -87,6 +114,9 @@
     "image_url": "assets/images/16_seater_car_image1.png",
     "max_speed": 160,
     "capacity": 16,
+    "rating": 4.5,
+    "review_count": 15,
+    "reviews": [],
     "pricing": { "base_fare": 6, "price_per_km": 4.2, "price_per_day": 180 }
   },
   {
@@ -96,6 +126,9 @@
     "image_url": "assets/images/16_seater_car_image2.png",
     "max_speed": 150,
     "capacity": 16,
+    "rating": 4.4,
+    "review_count": 14,
+    "reviews": [],
     "pricing": { "base_fare": 6, "price_per_km": 4.0, "price_per_day": 170 }
   },
   {
@@ -105,6 +138,9 @@
     "image_url": "assets/images/16_seater_car_image3.png",
     "max_speed": 170,
     "capacity": 16,
+    "rating": 4.6,
+    "review_count": 18,
+    "reviews": [],
     "pricing": { "base_fare": 6.5, "price_per_km": 4.5, "price_per_day": 200 }
   },
   {
@@ -114,6 +150,9 @@
     "image_url": "assets/images/32_seater_car_image1.png",
     "max_speed": 100,
     "capacity": 32,
+    "rating": 4.3,
+    "review_count": 10,
+    "reviews": [],
     "pricing": { "base_fare": 10, "price_per_km": 6.5, "price_per_day": 400 }
   },
   {
@@ -123,6 +162,9 @@
     "image_url": "assets/images/32_seater_car_image2.png",
     "max_speed": 110,
     "capacity": 32,
+    "rating": 4.4,
+    "review_count": 11,
+    "reviews": [],
     "pricing": { "base_fare": 10, "price_per_km": 6.8, "price_per_day": 420 }
   },
   {
@@ -132,6 +174,9 @@
     "image_url": "assets/images/32_seater_car_image3.png",
     "max_speed": 120,
     "capacity": 32,
+    "rating": 4.7,
+    "review_count": 9,
+    "reviews": [],
     "pricing": { "base_fare": 12, "price_per_km": 7.2, "price_per_day": 450 }
   },
   {
@@ -141,6 +186,9 @@
     "image_url": "assets/images/ferrari.png",
     "max_speed": 340,
     "capacity": 2,
+    "rating": 5.0,
+    "review_count": 5,
+    "reviews": [],
     "pricing": { "base_fare": 12, "price_per_km": 8.0, "price_per_day": 600 }
   },
   {
@@ -150,6 +198,9 @@
     "image_url": "assets/images/lamborghini.png",
     "max_speed": 310,
     "capacity": 2,
+    "rating": 4.9,
+    "review_count": 6,
+    "reviews": [],
     "pricing": { "base_fare": 12, "price_per_km": 7.5, "price_per_day": 580 }
   }
 ]

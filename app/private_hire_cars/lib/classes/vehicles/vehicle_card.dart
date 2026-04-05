@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:private_hire_cars/classes/vehicles/vehicle.dart';
+import 'package:private_hire_cars/pages/vehicle_review_page.dart';
 
 class VehicleCard extends StatelessWidget {
   final Vehicle vehicle;
@@ -45,7 +46,9 @@ class VehicleCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// LEFT: NAME + CAPACITY
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,12 +65,48 @@ class VehicleCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text(
-                  "£${(vehicle.pricing.baseFare + (distanceKm * vehicle.pricing.pricePerKm)).toStringAsFixed(2)}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+
+                /// RIGHT: PRICE + RATING
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "£${(vehicle.pricing.baseFare + (distanceKm * vehicle.pricing.pricePerKm)).toStringAsFixed(2)}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VehicleReviewPage(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            "4.2",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "(5)",
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
