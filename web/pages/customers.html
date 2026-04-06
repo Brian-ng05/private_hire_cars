@@ -6,18 +6,16 @@
     <title>Manage Customers | Private HireCars Staff</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Detail Modal Styling */
+
         .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
         .detail-label { font-weight: bold; color: #555; }
         .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
         .history-table th { text-align: left; background: #f4f4f4; padding: 10px; border-bottom: 2px solid #ddd; }
         .history-table td { padding: 10px; border-bottom: 1px solid #eee; }
         
-        /* Loyalty Point Badges (#47) */
         .point-badge { background: #fff7ed; color: #c2410c; padding: 4px 10px; border-radius: 6px; font-weight: bold; border: 1px solid #fdba74; font-size: 0.85rem; }
         .loyal-vip { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
 
-        /* Action Buttons Layout */
         .btn-group { display: flex; gap: 8px; justify-content: flex-end; }
         .btn-mini { padding: 6px 12px; font-size: 0.75rem; border-radius: 4px; }
     </style>
@@ -104,6 +102,40 @@
         </div>
     </div>
 
+    <div id="emailModal" class="modal">
+    <div class="modal-content" style="width: 600px;">
+        <span class="close-btn" onclick="closeEmailModal()">&times;</span>
+        <h2>Send Email to Customer</h2>
+        <p id="targetEmail" style="color: #666; margin-bottom: 20px;"></p>
+
+        <form id="emailForm">
+            <div class="form-group">
+                <label>Email Template</label>
+                <select id="emailTemplate" onchange="applyTemplate()">
+                    <option value="custom_message">Custom Message</option>
+                    <option value="booking_confirm">Booking Confirmation</option>
+                    <option value="booking_cancel">Booking Cancellation</option>
+                    <option value="payment_reminder">Payment Reminder</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="emailSubject" placeholder="Enter subject..." required>
+            </div>
+
+            <div class="form-group">
+                <label>Message Body (Include Booking Details)</label>
+                <textarea id="emailMessage" rows="8" placeholder="Write your message here..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" id="sendEmailBtn">
+                Send Email Now
+            </button>
+        </form>
+    </div>
+        </div>
+
     <script>
 
         const customers = [
@@ -139,6 +171,7 @@
                         <td><span class="point-badge ${isLoyal ? 'loyal-vip' : ''}">${c.points} pts ${isLoyal ? '★' : ''}</span></td>
                         <td style="text-align: right;">
                             <div class="btn-group">
+                                <button class="btn-primary btn-mini" style="background:#268185;" onclick="openEmailModal('${c.name}')">Email</button>
                                 <button class="btn-primary btn-mini" style="background:#666;" onclick="viewDetails('${c.name}')">Details</button>
                                 <button class="btn-primary btn-mini" style="background:#4a5568;" onclick="goToChat('${c.name}')">Chat</button>
                                 <button class="btn-primary btn-mini" onclick="bookForCustomer('${c.name}', '${c.email}')">Booking</button>
@@ -184,6 +217,63 @@
             if (event.target == document.getElementById('detailsModal')) closeDetails();
         }
 
+        function openEmailModal(email) {
+            document.getElementById('targetEmail').innerText = `To: ${email}`;
+            document.getElementById('emailModal').style.display = 'block';
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').style.display = 'none';
+            document.getElementById('emailForm').reset();
+        }
+
+        const templates = {
+            custom_message: {
+                subject: "",
+                body: ""
+            },
+            booking_confirm: {
+                subject: "Booking Confirmation - Private HireCars",
+                body: "Dear Customer,\n\nYour booking [Booking_ID] has been confirmed.\nVehicle: [Vehicle_Name]\nTime: [Date_Time]\n\nThank you for choosing us!"
+            },
+            booking_cancel: {
+                subject: "Booking Cancellation - Private HireCars",
+                body: "Dear Customer,\n\nWe regret to inform you that your booking [Booking_ID] has been cancelled.\nReason: [Reason_Here]\n\nPlease contact support for more details."
+            },
+            payment_reminder: {
+                subject: "Payment Reminder - Private HireCars",
+                body: "Dear Customer,\n\nThis is a friendly reminder that payment for your booking [Booking_ID] is due on [Due_Date].\nAmount: [Amount_Due]\n\nPlease ensure timely payment to avoid cancellation."
+            }
+        };
+
+    function applyTemplate() {
+        const selected = document.getElementById('emailTemplate').value;
+        if (selected !== 'custom') {
+            document.getElementById('emailSubject').value = templates[selected].subject;
+            document.getElementById('emailMessage').value = templates[selected].body;
+        }
+    }
+
+    document.getElementById('emailForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('sendEmailBtn');
+    
+        btn.disabled = true;
+        btn.innerText = "Sending...";
+
+        // Simulate sending email to corresponding customer account
+        setTimeout(() => {
+            const isSuccess = Math.random() > 0.1;
+            if (isSuccess) {
+                alert("Success: Email has been sent to the customer!");
+                closeEmailModal();
+            } else {
+                alert("Failed: Could not connect to mail server. Please try again.");
+            }
+            btn.disabled = false;
+            btn.innerText = "Send Email Now";
+    }, 1500);
+});
         renderTable();
     </script>
 </body>
